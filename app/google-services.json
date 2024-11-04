@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "968431577107",
+    "project_id": "quickflip-238c8",
+    "storage_bucket": "quickflip-238c8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968431577107:android:f2111370de106f1926f7e6",
+        "android_client_info": {
+          "package_name": "com.mobdeve.s20.group7.mco2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "968431577107-lrhreh0l2qcbg81fuiprgb3pvvkdl81g.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.mobdeve.s20.group7.mco2",
+            "certificate_hash": "f8fcd925f4c04bec1c04dccb25a686566e50758e"
+          }
+        },
+        {
+          "client_id": "968431577107-1md604f6gc8gtrlr4e398sukt7bgi5gb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB48_LUa-h87gobKvSRJ8XEbDzfuLKRpIQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "968431577107-1md604f6gc8gtrlr4e398sukt7bgi5gb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

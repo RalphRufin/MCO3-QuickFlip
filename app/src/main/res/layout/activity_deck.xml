@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/headerElement"
+            android:layout_width="match_parent"
+            android:layout_height="550dp"
+            android:contentDescription="@string/header_background"
+            android:scaleType="fitXY"
+            android:src="@drawable/quickflipheaderwaveelement"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/toolbar_base"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvMyDecks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:layout_marginBottom="360dp"
+            android:text="@string/my_decks"
+            android:textColor="#053574"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/headerElement"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.462"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar"
+            app:layout_constraintVertical_bias="0.228" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDecks"
+            android:layout_width="330dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/tvMyDecks"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:background="#EFF5F9"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:paddingStart="30dp"
+            android:paddingEnd="16dp" />
+
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabMain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/add_deck"
+            android:src="@drawable/quickflipaddicon"
+            app:backgroundTint="#4285F4"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFindDeck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/find_deck"
+            android:src="@drawable/quickflipfinddeckicon"
+            app:backgroundTint="#4285F4"
+            android:visibility="gone"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@id/fabImportDeck"
+            app:layout_constraintEnd_toEndOf="@id/fabMain" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabImportDeck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/import_deck"
+            android:src="@drawable/quickflipdownloadicon"
+            app:backgroundTint="#4285F4"
+            android:visibility="gone"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@id/fabShareDeck"
+            app:layout_constraintEnd_toEndOf="@id/fabMain" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabShareDeck"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/share_deck"
+            android:src="@drawable/quickflipshareicon"
+            app:backgroundTint="#4285F4"
+            android:visibility="gone"
+            app:fabSize="mini"
+            app:layout_constraintBottom_toTopOf="@id/fabMain"
+            app:layout_constraintEnd_toEndOf="@id/fabMain" />
+
+        <TextView
+            android:id="@+id/tvFindDeck"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:text="@string/find_deck"
+            android:textColor="@color/white"
+            android:background="#053574"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/fabFindDeck"
+            app:layout_constraintEnd_toStartOf="@id/fabFindDeck"
+            app:layout_constraintTop_toTopOf="@id/fabFindDeck" />
+
+        <TextView
+            android:id="@+id/tvImportDeck"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:text="@string/import_deck"
+            android:textColor="@color/white"
+            android:background="#053574"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/fabImportDeck"
+            app:layout_constraintEnd_toStartOf="@id/fabImportDeck"
+            app:layout_constraintTop_toTopOf="@id/fabImportDeck" />
+
+        <ImageView
+            android:id="@+id/footerElement"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/footer_background"
+            android:scaleType="fitXY"
+            android:src="@drawable/quickflipfooterwaveelement"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/tvShareDeck"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:text="@string/share_deck"
+            android:background="#053574"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/fabShareDeck"
+            app:layout_constraintEnd_toStartOf="@id/fabShareDeck"
+            app:layout_constraintTop_toTopOf="@id/fabShareDeck" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.material.navigation.NavigationView
+        android:id="@+id/navigation_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/drawer_menu" />
+
+</androidx.drawerlayout.widget.DrawerLayout>
