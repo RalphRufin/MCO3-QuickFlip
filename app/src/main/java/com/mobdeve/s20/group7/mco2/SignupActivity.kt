@@ -33,7 +33,6 @@ class SignupActivity : AppCompatActivity() {
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var firebaseHelper: FirebaseHelper
 
-    // UI components
     private lateinit var usernameEditText: EditText
     private lateinit var emailEditText: EditText
     private lateinit var passwordEditText: EditText
@@ -49,11 +48,9 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        // Initialize Firebase Auth and Helper
         auth = Firebase.auth
         firebaseHelper = FirebaseHelper.getInstance()
 
-        // Initialize UI components
         initializeViews()
         setupClickListeners()
         setupSocialLogin()
@@ -79,10 +76,8 @@ class SignupActivity : AppCompatActivity() {
     }
 
     private fun setupSocialLogin() {
-        // Initialize Facebook Login
         callbackManager = CallbackManager.Factory.create()
 
-        // Configure Google Sign In
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
@@ -90,21 +85,18 @@ class SignupActivity : AppCompatActivity() {
 
         googleSignInClient = GoogleSignIn.getClient(this, gso)
 
-        // Facebook sign-out to clear last session
         findViewById<ImageView>(R.id.facebookSignup).setOnClickListener {
-            LoginManager.getInstance().logOut() // Log out from Facebook
+            LoginManager.getInstance().logOut()
             val permissions = listOf("email", "public_profile")
-            LoginManager.getInstance().logIn(this, permissions) // Re-initiate Facebook login
+            LoginManager.getInstance().logIn(this, permissions)
         }
 
-        // Google sign-out to clear last session
         findViewById<ImageView>(R.id.googleSignup).setOnClickListener {
             googleSignInClient.signOut().addOnCompleteListener {
-                signInWithGoogle() // Re-initiate Google login
+                signInWithGoogle()
             }
         }
 
-        // Facebook callback registration
         LoginManager.getInstance().registerCallback(callbackManager,
             object : FacebookCallback<LoginResult> {
                 override fun onSuccess(loginResult: LoginResult) {
@@ -132,7 +124,6 @@ class SignupActivity : AppCompatActivity() {
         val password = passwordEditText.text.toString()
         val confirmPassword = confirmPasswordEditText.text.toString()
 
-        // Validation
         when {
             username.isEmpty() -> {
                 usernameEditText.error = "Username required"
@@ -156,14 +147,12 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        // Create user with email and password
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     navigateToMain()
                     Log.d(TAG, "createUserWithEmail:success")
                     val user = auth.currentUser
-                    // Save additional user data to Firebase database and navigate to MainActivity
                     user?.let {
                         saveUserToDatabase(
                             uid = it.uid,

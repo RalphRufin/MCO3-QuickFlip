@@ -37,21 +37,18 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        // Ensure correct IDs and view types
-        val signUpClickText = findViewById<TextView>(R.id.signUpText)          // TextView
-        val loginButton = findViewById<Button>(R.id.loginButton)               // Button
-        val emailField = findViewById<EditText>(R.id.emailEditText)            // EditText
-        val passwordField = findViewById<EditText>(R.id.passwordEditText)      // EditText
-        val googleLogin = findViewById<ImageView>(R.id.googleLogin)            // ImageView
-        val facebookLogin = findViewById<ImageView>(R.id.facebookLogin)        // ImageView
+        val signUpClickText = findViewById<TextView>(R.id.signUpText)
+        val loginButton = findViewById<Button>(R.id.loginButton)
+        val emailField = findViewById<EditText>(R.id.emailEditText)
+        val passwordField = findViewById<EditText>(R.id.passwordEditText)
+        val googleLogin = findViewById<ImageView>(R.id.googleLogin)
+        val facebookLogin = findViewById<ImageView>(R.id.facebookLogin)
 
-        // Sign-Up click listener to navigate to SignupActivity
         signUpClickText.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
 
-        // Add listeners to googleLogin and facebookLogin ImageViews
         googleLogin.setOnClickListener {
             googleSignInClient.signOut().addOnCompleteListener {
                 signInWithGoogle()
@@ -59,18 +56,16 @@ class LoginActivity : AppCompatActivity() {
         }
 
         facebookLogin.setOnClickListener {
-            LoginManager.getInstance().logOut() // Log out from previous Facebook session
+            LoginManager.getInstance().logOut()
             LoginManager.getInstance().logInWithReadPermissions(this, listOf("email", "public_profile"))
         }
 
-        // Email login button click listener
         loginButton.setOnClickListener {
             val email = emailField.text.toString()
             val password = passwordField.text.toString()
             loginWithEmail(email, password)
         }
 
-        // Initialize Google and Facebook sign-in
         setupGoogleSignIn()
         setupFacebookSignIn()
     }
@@ -173,7 +168,6 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun userExistsInFirebase(user: FirebaseUser): Boolean {
-        // Assuming a check based on UID for simplicity. Normally you would check your database.
         return user.email != null && user.uid.isNotEmpty()
     }
 
