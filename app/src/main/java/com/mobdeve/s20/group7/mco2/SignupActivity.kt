@@ -49,7 +49,7 @@ class SignupActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
 
-        // Initialize Firebase Auth and Helper
+
         auth = Firebase.auth
         firebaseHelper = FirebaseHelper.getInstance()
 
