@@ -1,6 +1,9 @@
 package com.mobdeve.s20.group7.mco2
 
+import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -9,22 +12,22 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.facebook.*
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.*
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.FirebaseFirestore
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
-    private lateinit var callbackManager: CallbackManager
+    private lateinit var db: FirebaseFirestore
 
     companion object {
         private const val TAG = "LoginActivity"
@@ -36,13 +39,13 @@ class LoginActivity : AppCompatActivity() {
         setContentView(R.layout.activity_login)
 
         auth = Firebase.auth
+        db = FirebaseFirestore.getInstance()
 
         val signUpClickText = findViewById<TextView>(R.id.signUpText)
         val loginButton = findViewById<Button>(R.id.loginButton)
         val emailField = findViewById<EditText>(R.id.emailEditText)
         val passwordField = findViewById<EditText>(R.id.passwordEditText)
         val googleLogin = findViewById<ImageView>(R.id.googleLogin)
-        val facebookLogin = findViewById<ImageView>(R.id.facebookLogin)
 
         signUpClickText.setOnClickListener {
             val intent = Intent(this, SignupActivity::class.java)
@@ -55,11 +58,6 @@ class LoginActivity : AppCompatActivity() {
             }
         }
 
-        facebookLogin.setOnClickListener {
-            LoginManager.getInstance().logOut()
-            LoginManager.getInstance().logInWithReadPermissions(this, listOf("email", "public_profile"))
-        }
-
         loginButton.setOnClickListener {
             val email = emailField.text.toString()
             val password = passwordField.text.toString()
@@ -67,11 +65,14 @@ class LoginActivity : AppCompatActivity() {
         }
 
         setupGoogleSignIn()
-        setupFacebookSignIn()
     }
 
-
     private fun loginWithEmail(email: String, password: String) {
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show()
+            return
+        }
+
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -96,30 +97,8 @@ class LoginActivity : AppCompatActivity() {
         startActivityForResult(signInIntent, RC_SIGN_IN)
     }
 
-    private fun setupFacebookSignIn() {
-        callbackManager = CallbackManager.Factory.create()
-
-        LoginManager.getInstance().registerCallback(callbackManager,
-            object : FacebookCallback<LoginResult> {
-                override fun onSuccess(loginResult: LoginResult) {
-                    handleFacebookAccessToken(loginResult.accessToken)
-                }
-
-                override fun onCancel() {
-                    Toast.makeText(baseContext, "Facebook login cancelled", Toast.LENGTH_SHORT).show()
-                }
-
-                override fun onError(error: FacebookException) {
-                    Log.d(TAG, "facebook:onError", error)
-                    Toast.makeText(baseContext, "Facebook login failed", Toast.LENGTH_SHORT).show()
-                }
-            })
-    }
-
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
-        callbackManager.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == RC_SIGN_IN) {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -139,36 +118,64 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     val user = auth.currentUser
-                    if (user != null && userExistsInFirebase(user)) {
-                        navigateToMain()
-                    } else {
-                        Toast.makeText(this, "No account found with this Google account", Toast.LENGTH_SHORT).show()
+                    if (user != null) {
+                        checkUserInFirestore(user)
                     }
                 } else {
-                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    Log.e(TAG, "Authentication failed", task.exception)
+                    Toast.makeText(this,
+                        "Authentication failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
-    private fun handleFacebookAccessToken(token: AccessToken) {
-        val credential = FacebookAuthProvider.getCredential(token.token)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    if (user != null && userExistsInFirebase(user)) {
-                        navigateToMain()
-                    } else {
-                        Toast.makeText(this, "No account found with this Facebook account", Toast.LENGTH_SHORT).show()
-                    }
+    private fun checkUserInFirestore(user: FirebaseUser) {
+        // Add network check
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this,
+                "No internet connection. Please check your connection and try again.",
+                Toast.LENGTH_LONG).show()
+            return
+        }
+
+        db.collection("users").document(user.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.d(TAG, "Firestore check - Document exists: ${document?.exists()}")
+                if (document != null && document.exists()) {
+                    navigateToMain()
                 } else {
-                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show()
+                    auth.signOut()
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        Toast.makeText(
+                            this,
+                            "No account found. Please sign up first.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error checking user in Firestore", e)
+                auth.signOut()
+                googleSignInClient.signOut()
+                Toast.makeText(
+                    this,
+                    "Database error: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
     }
 
-    private fun userExistsInFirebase(user: FirebaseUser): Boolean {
-        return user.email != null && user.uid.isNotEmpty()
+    // Add network check function
+    private fun isNetworkAvailable(): Boolean {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val network = connectivityManager.activeNetwork
+        val capabilities = connectivityManager.getNetworkCapabilities(network)
+        return capabilities != null &&
+                (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
     }
 
     private fun navigateToMain() {

@@ -143,19 +143,8 @@
             android:layout_margin="10dp"
             android:onClick="onGoogleSignupClick"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/facebookSignup"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/facebookSignup"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_fb"
-            android:layout_margin="10dp"
-            android:onClick="onFacebookSignupClick"
-            app:layout_constraintStart_toEndOf="@id/googleSignup"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
