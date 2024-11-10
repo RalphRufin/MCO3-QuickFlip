@@ -22,12 +22,15 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.mobdeve.s20.group7.mco2.models.User
+import com.mobdeve.s20.group7.mco2.session.UserSessionManager
 
 class LoginActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var db: FirebaseFirestore
+    private lateinit var sessionManager: UserSessionManager
 
     companion object {
         private const val TAG = "LoginActivity"
@@ -40,6 +43,7 @@ class LoginActivity : AppCompatActivity() {
 
         auth = Firebase.auth
         db = FirebaseFirestore.getInstance()
+        sessionManager = UserSessionManager(this)
 
         val signUpClickText = findViewById<TextView>(R.id.signUpText)
         val loginButton = findViewById<Button>(R.id.loginButton)
@@ -76,13 +80,102 @@ class LoginActivity : AppCompatActivity() {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    navigateToMain()
+                    val user = auth.currentUser
+                    if (user != null) {
+                        fetchUserDataAndSaveSession(user, "email")
+                    }
                 } else {
                     Toast.makeText(this, "Invalid login credentials", Toast.LENGTH_SHORT).show()
                 }
             }
     }
 
+    private fun fetchUserDataAndSaveSession(firebaseUser: FirebaseUser, authMethod: String) {
+        db.collection("users").document(firebaseUser.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document != null && document.exists()) {
+                    val username = document.getString("username") ?: ""
+                    val email = firebaseUser.email ?: ""
+                    val profilePicUrl = firebaseUser.photoUrl?.toString() ?: ""
+
+                    val user = User(
+                        username = username,
+                        email = email,
+                        profilePicUrl = profilePicUrl,
+                        authMethod = authMethod
+                    )
+
+                    sessionManager.saveUserSession(user)
+                    navigateToMain()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error fetching user data", e)
+                Toast.makeText(
+                    this,
+                    "Error fetching user data: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    private fun firebaseAuthWithGoogle(idToken: String) {
+        val credential = GoogleAuthProvider.getCredential(idToken, null)
+        auth.signInWithCredential(credential)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    val user = auth.currentUser
+                    if (user != null) {
+                        checkUserInFirestore(user)
+                    }
+                } else {
+                    Log.e(TAG, "Authentication failed", task.exception)
+                    Toast.makeText(this,
+                        "Authentication failed: ${task.exception?.message}",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun checkUserInFirestore(user: FirebaseUser) {
+        if (!isNetworkAvailable()) {
+            Toast.makeText(this,
+                "No internet connection. Please check your connection and try again.",
+                Toast.LENGTH_LONG).show()
+            return
+        }
+
+        db.collection("users").document(user.uid)
+            .get()
+            .addOnSuccessListener { document ->
+                Log.d(TAG, "Firestore check - Document exists: ${document?.exists()}")
+                if (document != null && document.exists()) {
+                    fetchUserDataAndSaveSession(user, "google")
+                } else {
+                    auth.signOut()
+                    googleSignInClient.signOut().addOnCompleteListener {
+                        Toast.makeText(
+                            this,
+                            "No account found. Please sign up first.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(TAG, "Error checking user in Firestore", e)
+                auth.signOut()
+                googleSignInClient.signOut()
+                Toast.makeText(
+                    this,
+                    "Database error: ${e.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+    }
+
+    // Rest of the code remains the same...
     private fun setupGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -112,63 +205,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
-        val credential = GoogleAuthProvider.getCredential(idToken, null)
-        auth.signInWithCredential(credential)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    val user = auth.currentUser
-                    if (user != null) {
-                        checkUserInFirestore(user)
-                    }
-                } else {
-                    Log.e(TAG, "Authentication failed", task.exception)
-                    Toast.makeText(this,
-                        "Authentication failed: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT).show()
-                }
-            }
-    }
-
-    private fun checkUserInFirestore(user: FirebaseUser) {
-        // Add network check
-        if (!isNetworkAvailable()) {
-            Toast.makeText(this,
-                "No internet connection. Please check your connection and try again.",
-                Toast.LENGTH_LONG).show()
-            return
-        }
-
-        db.collection("users").document(user.uid)
-            .get()
-            .addOnSuccessListener { document ->
-                Log.d(TAG, "Firestore check - Document exists: ${document?.exists()}")
-                if (document != null && document.exists()) {
-                    navigateToMain()
-                } else {
-                    auth.signOut()
-                    googleSignInClient.signOut().addOnCompleteListener {
-                        Toast.makeText(
-                            this,
-                            "No account found. Please sign up first.",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                }
-            }
-            .addOnFailureListener { e ->
-                Log.e(TAG, "Error checking user in Firestore", e)
-                auth.signOut()
-                googleSignInClient.signOut()
-                Toast.makeText(
-                    this,
-                    "Database error: ${e.message}",
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
-    }
-
-    // Add network check function
     private fun isNetworkAvailable(): Boolean {
         val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val network = connectivityManager.activeNetwork

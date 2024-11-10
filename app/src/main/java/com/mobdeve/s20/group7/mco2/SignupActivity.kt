@@ -153,7 +153,7 @@ class SignupActivity : AppCompatActivity() {
         ).addOnSuccessListener {
             Log.d(TAG, "User data saved successfully")
             Toast.makeText(baseContext, "Signup successful!", Toast.LENGTH_SHORT).show()
-            navigateToMain() // Navigate to MainActivity upon successful data save
+            navigateToLogin() // Navigate to MainActivity upon successful data save
         }.addOnFailureListener { e ->
             Log.w(TAG, "Error saving user data", e)
             Toast.makeText(baseContext, "Error saving user data", Toast.LENGTH_SHORT).show()
@@ -209,8 +209,8 @@ class SignupActivity : AppCompatActivity() {
             }
     }
 
-    private fun navigateToMain() {
-        val intent = Intent(this, MainActivity::class.java)
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
