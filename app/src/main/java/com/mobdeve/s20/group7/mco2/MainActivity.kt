@@ -3,14 +3,24 @@ package com.mobdeve.s20.group7.mco2
 import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageButton
+import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : BaseActivity() {
+    private lateinit var auth: FirebaseAuth
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setupBaseComponents()
 
+        //instance
+        auth = FirebaseAuth.getInstance()
+
+        //basic check
+        if (auth.currentUser == null) {
+            navigateToLogin()
+        }
 
         val deckButton: ImageButton = findViewById(R.id.deckButton)
         val browseButton: ImageButton = findViewById(R.id.browseButton)
@@ -38,6 +48,14 @@ class MainActivity : BaseActivity() {
             startActivity(intent)
             onTestButtonClick()
         }
+
+
+    }
+
+    private fun navigateToLogin() {
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun onDeckButtonClick() {
