@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/quickfliphome"
+        android:title="Home" />
+
+    <item
+        android:id="@+id/deckFragment"
+        android:icon="@drawable/quickflipspade"
+        android:title="Deck" />
+
+    <item
+        android:id="@+id/browseFragment"
+        android:icon="@drawable/quickflipsearch"
+        android:title="Browse" />
+
+    <item
+        android:id="@+id/profileFragment"
+        android:icon="@drawable/quickflipuser"
+        android:title="Profile" />
+</menu>
