@@ -53,7 +53,7 @@ dependencies {
     val navVersion = ("2.8.3")
 
     // Navigation Component
-    implementation ("androidx.navigation:navigation-fragment-ktx:$navVersion")
+    implementation ("androidx.navigation:navigation-fragment-ktx:2.8.3")
     implementation ("androidx.navigation:navigation-ui-ktx:$navVersion")
 
     // Material Design for BottomNavigationView

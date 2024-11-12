@@ -1,4 +1,4 @@
-package com.mobdeve.s20.group7.mco2
+package com.mobdeve.s20.group7.mco2.models
 
 class CardItem(private val question: String, private val answer: String) {
 

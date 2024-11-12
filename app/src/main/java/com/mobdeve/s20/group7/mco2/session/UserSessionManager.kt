@@ -35,7 +35,8 @@ class UserSessionManager(private val context: Context) {
             username = sharedPreferences.getString(KEY_USERNAME, "") ?: "",
             email = sharedPreferences.getString(KEY_EMAIL, "") ?: "",
             profilePicUrl = sharedPreferences.getString(KEY_PROFILE_PIC_URL, "") ?: "",
-            authMethod = sharedPreferences.getString(KEY_AUTH_METHOD, "") ?: ""
+            authMethod = sharedPreferences.getString(KEY_AUTH_METHOD, "") ?: "",
+            deckItems = listOf()
         )
     }
 
