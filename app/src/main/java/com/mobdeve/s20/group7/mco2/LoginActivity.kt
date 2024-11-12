@@ -99,7 +99,6 @@ class LoginActivity : AppCompatActivity() {
                     val username = document.getString("username") ?: ""
                     val email = firebaseUser.email ?: ""
                     val profilePicUrl = firebaseUser.photoUrl?.toString() ?: ""
-
                     val deckItems = document.get("deckItems") as? List<DeckItem> ?: listOf()
 
                     val user = User(
