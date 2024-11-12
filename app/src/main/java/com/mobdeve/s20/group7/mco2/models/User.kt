@@ -4,5 +4,6 @@ data class User(
     val username: String,
     val email: String,
     val profilePicUrl: String,
-    val authMethod: String
+    val authMethod: String,
+    val deckItems: List<DeckItem>
 )

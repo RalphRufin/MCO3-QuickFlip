@@ -6,11 +6,11 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.ImageView
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.mobdeve.s20.group7.mco2.models.DeckItem
 
 class DeckActivity : BaseActivity() {
 
@@ -81,9 +81,18 @@ class DeckActivity : BaseActivity() {
 
     private fun createSampleDeckItems(): List<DeckItem> {
         return listOf(
-            DeckItem("@drawable/quickflipdeckicon", "Deck 1"),
-            DeckItem("@drawable/quickflipdeckicon", "Deck 2"),
-            DeckItem("@drawable/quickflipdeckicon", "Deck 3")
+            DeckItem(
+                "@drawable/quickflipdeckicon",
+                "Deck 1"
+            ),
+            DeckItem(
+                "@drawable/quickflipdeckicon",
+                "Deck 2"
+            ),
+            DeckItem(
+                "@drawable/quickflipdeckicon",
+                "Deck 3"
+            )
         )
     }
 

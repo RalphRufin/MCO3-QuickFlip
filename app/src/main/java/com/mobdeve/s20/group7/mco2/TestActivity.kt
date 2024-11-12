@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.widget.ImageButton
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.mobdeve.s20.group7.mco2.models.DeckItem
 
 class TestActivity : BaseActivity() {
 
@@ -40,9 +41,18 @@ class TestActivity : BaseActivity() {
 
     private fun createSampleDeckItems(): List<DeckItem> {
         return listOf(
-            DeckItem("@drawable/quickflipdeckicon", "Deck 1"),
-            DeckItem("@drawable/quickflipdeckicon", "Deck 2"),
-            DeckItem("@drawable/quickflipdeckicon", "Deck 3")
+            DeckItem(
+                "@drawable/quickflipdeckicon",
+                "Deck 1"
+            ),
+            DeckItem(
+                "@drawable/quickflipdeckicon",
+                "Deck 2"
+            ),
+            DeckItem(
+                "@drawable/quickflipdeckicon",
+                "Deck 3"
+            )
         )
     }
 }

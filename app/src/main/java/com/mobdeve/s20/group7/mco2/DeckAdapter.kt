@@ -5,30 +5,39 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.mobdeve.s20.group7.mco2.models.DeckItem
 
 class DeckAdapter(
     private val deckItems: List<DeckItem>,
-    private val onDeckClick: ((DeckItem) -> Unit)? = null // Optional parameter with a default value
+    private val onDeckClick: ((DeckItem) -> Unit)? = null
 ) : RecyclerView.Adapter<DeckAdapter.DeckViewHolder>() {
+
+    private var selectedPosition = RecyclerView.NO_POSITION
 
     inner class DeckViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val deckImageView: ImageView = itemView.findViewById(R.id.ivDeckImage)
         private val deckTitleView: TextView = itemView.findViewById(R.id.tvDeckTitle)
 
-        fun bind(deckItem: DeckItem) {
+        fun bind(deckItem: DeckItem, isSelected: Boolean) {
             val drawableResource = getDrawableResource(deckItem.getDeckImage())
-            if (drawableResource != 0) {
-                deckImageView.setImageResource(drawableResource)
-            } else {
-                deckImageView.setImageResource(R.drawable.default_image)
-            }
-
+            deckImageView.setImageResource(
+                if (drawableResource != 0) drawableResource else R.drawable.default_image
+            )
             deckTitleView.text = deckItem.getDeckTitle()
 
-            // Set up click listener only if onDeckClick is not null
+            // Change background to indicate selection
+            itemView.setBackgroundColor(
+                if (isSelected) ContextCompat.getColor(itemView.context, R.color.light_gray)
+                else ContextCompat.getColor(itemView.context, android.R.color.transparent)
+            )
+
             itemView.setOnClickListener {
-                onDeckClick?.let { clickHandler -> clickHandler(deckItem) }
+                onDeckClick?.invoke(deckItem)
+                notifyItemChanged(selectedPosition) // Deselect the old item
+                selectedPosition = adapterPosition
+                notifyItemChanged(selectedPosition) // Highlight the new item
             }
         }
 
@@ -43,11 +52,8 @@ class DeckAdapter(
     }
 
     override fun onBindViewHolder(holder: DeckViewHolder, position: Int) {
-        val currentItem = deckItems[position]
-        holder.bind(currentItem)
+        holder.bind(deckItems[position], position == selectedPosition)
     }
 
-    override fun getItemCount(): Int {
-        return deckItems.size
-    }
+    override fun getItemCount(): Int = deckItems.size
 }

@@ -1,14 +1,22 @@
-package com.mobdeve.s20.group7.mco2;
+package com.mobdeve.s20.group7.mco2.models;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DeckItem {
 
-    private final String deckImage;
-    private final String deckTitle;
-    private final List<CardItem> cardItems;
+    private String deckImage;
+    private String deckTitle;
+    private List<CardItem> cardItems;
 
+    // No-argument constructor required for Firestore
+    public DeckItem() {
+        this.deckImage = "";
+        this.deckTitle = "";
+        this.cardItems = new ArrayList<>();
+    }
+
+    // Constructor with arguments
     public DeckItem(String deckImage, String deckTitle) {
         this.deckImage = deckImage;
         this.deckTitle = deckTitle;

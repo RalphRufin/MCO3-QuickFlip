@@ -22,6 +22,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
+import com.mobdeve.s20.group7.mco2.models.DeckItem
 import com.mobdeve.s20.group7.mco2.models.User
 import com.mobdeve.s20.group7.mco2.session.UserSessionManager
 
@@ -99,11 +100,14 @@ class LoginActivity : AppCompatActivity() {
                     val email = firebaseUser.email ?: ""
                     val profilePicUrl = firebaseUser.photoUrl?.toString() ?: ""
 
+                    val deckItems = document.get("deckItems") as? List<DeckItem> ?: listOf()
+
                     val user = User(
                         username = username,
                         email = email,
                         profilePicUrl = profilePicUrl,
-                        authMethod = authMethod
+                        authMethod = authMethod,
+                        deckItems = deckItems
                     )
 
                     sessionManager.saveUserSession(user)
