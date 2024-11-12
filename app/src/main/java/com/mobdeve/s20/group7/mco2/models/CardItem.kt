@@ -1,12 +1,8 @@
 package com.mobdeve.s20.group7.mco2.models
 
-class CardItem(private val question: String, private val answer: String) {
-
-    fun getQuestion(): String {
-        return question
-    }
-
-    fun getAnswer(): String {
-        return answer
-    }
+data class CardItem(
+    val question: String = "",  // Default values to prevent issues if Firestore doesn't provide them
+    val answer: String = ""     // Default values to prevent issues if Firestore doesn't provide them
+) {
+    // No-argument constructor is implicitly added because of the default values
 }

@@ -1,5 +1,6 @@
 package com.mobdeve.s20.group7.mco2
 
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,6 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.mobdeve.s20.group7.mco2.models.DeckItem
 
 class DeckAdapter(
@@ -21,10 +23,15 @@ class DeckAdapter(
         private val deckTitleView: TextView = itemView.findViewById(R.id.tvDeckTitle)
 
         fun bind(deckItem: DeckItem, isSelected: Boolean) {
-            val drawableResource = getDrawableResource(deckItem.getDeckImage())
-            deckImageView.setImageResource(
-                if (drawableResource != 0) drawableResource else R.drawable.default_image
-            )
+            val imageUrl = deckItem.getDeckImage() // Assuming deckItem.getDeckImage() returns the image URL
+
+            // Load image from URL using Glide
+            Glide.with(itemView.context)
+                .load(imageUrl)  // This can be a URL or a URI
+                .placeholder(R.drawable.quickflipcutedeck) // Placeholder until the image loads
+                .error(R.drawable.quickflipcutedeck) // Fallback image on error
+                .into(deckImageView)
+
             deckTitleView.text = deckItem.getDeckTitle()
 
             // Change background to indicate selection
@@ -39,10 +46,6 @@ class DeckAdapter(
                 selectedPosition = adapterPosition
                 notifyItemChanged(selectedPosition) // Highlight the new item
             }
-        }
-
-        private fun getDrawableResource(imagePath: String): Int {
-            return itemView.context.resources.getIdentifier(imagePath, "drawable", itemView.context.packageName)
         }
     }
 

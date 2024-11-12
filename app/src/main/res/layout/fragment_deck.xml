@@ -45,22 +45,22 @@
             android:layout_width="match_parent"
             android:layout_height="454dp">
 
-            <!-- "My Decks" TextView aligned above RecyclerView -->
-
-            <!-- RecyclerView with horizontal items -->
-
-
-            <!-- Button to View Deck Details -->
+            <ImageView
+                android:id="@+id/deckBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/quickflipdeckscontainer"
+                android:scaleType="centerCrop"/>
 
             <TextView
                 android:id="@+id/myDecksText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="36dp"
-
                 android:paddingBottom="8dp"
                 android:text="My Decks"
                 android:textSize="20sp"
+                android:textColor="@color/black"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toTopOf="@+id/rvDecks"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -75,19 +75,18 @@
                 android:layout_marginBottom="50dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                app:layout_constraintBottom_toTopOf="@id/viewDeckButton"
+                app:layout_constraintBottom_toTopOf="@id/addDeckButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/viewDeckButton"
-                android:layout_width="305dp"
-                android:layout_height="67dp"
+            <ImageButton
+                android:id="@+id/addDeckButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
                 android:layout_margin="16dp"
-                android:padding="12dp"
-                android:text="View Deck"
-                android:textSize="16sp"
-                app:cornerRadius="8dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/quickflipblueaddbutton"
+                android:background="@null"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

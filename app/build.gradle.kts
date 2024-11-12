@@ -49,6 +49,8 @@ android {
 }
 
 dependencies {
+    implementation(libs.play.services.cast.framework)
+    implementation(libs.androidx.animation.android)
     // AndroidX Core dependencies
     val navVersion = ("2.8.3")
 
