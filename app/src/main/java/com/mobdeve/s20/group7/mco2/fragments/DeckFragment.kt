@@ -1,6 +1,7 @@
 package com.mobdeve.s20.group7.mco2.fragments
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.mobdeve.s20.group7.mco2.CardListActivity
 import com.mobdeve.s20.group7.mco2.DeckAdapter
 import com.mobdeve.s20.group7.mco2.R
 import com.mobdeve.s20.group7.mco2.models.CardItem
@@ -99,9 +101,16 @@ class DeckFragment : Fragment() {
 
     private fun setupAdapter() {
         deckRecyclerView.adapter = DeckAdapter(deckItems) { selectedDeck ->
-            Log.d(TAG, "Selected Deck: ${selectedDeck.deckTitle}")
+            val context = requireContext()
+            val intent = Intent(context, CardListActivity::class.java)
+            intent.putExtra("deck_item", selectedDeck)
+            context.startActivity(intent)
         }
     }
+
+
+
+
 
     private fun showAddDeckDialog() {
         val builder = AlertDialog.Builder(requireContext())

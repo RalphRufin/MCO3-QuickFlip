@@ -1,30 +1,25 @@
 package com.mobdeve.s20.group7.mco2.models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DeckItem {
-
+public class DeckItem implements Serializable {
     private String deckImage;
     private String deckTitle;
     private List<CardItem> cardItems;
 
-    // No-argument constructor required for Firestore
+    // No-argument constructor required for Firestore and serialization
     public DeckItem() {
         this.deckImage = "";
         this.deckTitle = "";
         this.cardItems = new ArrayList<>();
     }
 
-    // Constructor with arguments
-    public DeckItem(String deckImage, String deckTitle) {
+    public DeckItem(String deckImage, String deckTitle, List<CardItem> cardItems) {
         this.deckImage = deckImage;
         this.deckTitle = deckTitle;
-        this.cardItems = new ArrayList<>();
-    }
-
-    public void addCardItem(CardItem cardItem) {
-        cardItems.add(cardItem);
+        this.cardItems = cardItems;
     }
 
     public String getDeckImage() {
@@ -39,10 +34,15 @@ public class DeckItem {
         return cardItems;
     }
 
-    public CardItem getCardItem(int index) {
-        if (index >= 0 && index < cardItems.size()) {
-            return cardItems.get(index);
-        }
-        return null;
+    public void setDeckImage(String deckImage) {
+        this.deckImage = deckImage;
+    }
+
+    public void setDeckTitle(String deckTitle) {
+        this.deckTitle = deckTitle;
+    }
+
+    public void setCardItems(List<CardItem> cardItems) {
+        this.cardItems = cardItems;
     }
 }

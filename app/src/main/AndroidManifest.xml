@@ -40,6 +40,8 @@
         <activity android:name=".SpeedTActivity"/>
         <activity android:name=".MainActivity"/>
         <activity android:name=".TestActivity"/>
+        <activity android:name=".CardListActivity" />
+
     </application>
 
 </manifest>

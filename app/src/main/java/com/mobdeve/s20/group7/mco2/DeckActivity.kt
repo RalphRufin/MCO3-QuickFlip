@@ -73,28 +73,16 @@ class DeckActivity : BaseActivity() {
     }
 
     private fun setupRecyclerView() {
-        val deckItems = createSampleDeckItems()
-        val adapter = DeckAdapter(deckItems)
+
+        val adapter = DeckAdapter(
+            deckItems = TODO(),
+            clickListener = TODO()
+        )
         rvDecks.layoutManager = GridLayoutManager(this, 3)
         rvDecks.adapter = adapter
     }
 
-    private fun createSampleDeckItems(): List<DeckItem> {
-        return listOf(
-            DeckItem(
-                "@drawable/quickflipdeckicon",
-                "Deck 1"
-            ),
-            DeckItem(
-                "@drawable/quickflipdeckicon",
-                "Deck 2"
-            ),
-            DeckItem(
-                "@drawable/quickflipdeckicon",
-                "Deck 3"
-            )
-        )
-    }
+
 
     private fun onAddButtonClicked() {
         setVisibility(isExpanded)
