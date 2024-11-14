@@ -36,7 +36,7 @@ class UserSessionManager(private val context: Context) {
             email = sharedPreferences.getString(KEY_EMAIL, "") ?: "",
             profilePicUrl = sharedPreferences.getString(KEY_PROFILE_PIC_URL, "") ?: "",
             authMethod = sharedPreferences.getString(KEY_AUTH_METHOD, "") ?: "",
-            deckItems = listOf()
+            deckItems = ArrayList() // Change to ArrayList<DeckItem>()
         )
     }
 

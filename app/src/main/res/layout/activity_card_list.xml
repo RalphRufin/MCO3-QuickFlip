@@ -61,15 +61,15 @@
             <!-- RecyclerView for Cards -->
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvCards"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
+                android:layout_width="334dp"
+                android:layout_height="296dp"
                 android:layout_marginTop="16dp"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                app:layout_constraintTop_toBottomOf="@id/deckTitleText"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintTop_toBottomOf="@id/deckTitleText" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
