@@ -26,7 +26,7 @@ class StoreActivity : BaseActivity() {
 
     private fun loadStoreItems() {
         storeItems.add(StoreItem("Dark Mode", 200, R.drawable.quickflipnightmodeicon))
-        storeItems.add(StoreItem("More Stamina", 300, R.drawable.quickflipbatteryicon))
+        storeItems.add(StoreItem("More Stamina", 300, R.drawable.quickflipcutedeck))
         storeItems.add(StoreItem("More Decks", 100, R.drawable.quickflipmoredecksicon))
     }
 }

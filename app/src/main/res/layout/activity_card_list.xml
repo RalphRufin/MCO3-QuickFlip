@@ -45,6 +45,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <ImageView
+                android:id="@+id/deckBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/quickflipcardsholder"
+                android:scaleType="centerCrop"/>
+
             <TextView
                 android:id="@+id/deckTitleText"
                 android:layout_width="wrap_content"
@@ -88,12 +95,12 @@
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
-            android:id="@+id/btnViewCard"
+            android:id="@+id/btnEditDeck"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_marginHorizontal="16dp"
-            android:text="View Card"
+            android:text="Edit Deck"
             android:backgroundTint="@color/design_default_color_primary"
             android:textColor="@android:color/white" />
 

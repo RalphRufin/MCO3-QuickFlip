@@ -1,7 +1,6 @@
 package com.mobdeve.s20.group7.mco2
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,24 +12,25 @@ import com.mobdeve.s20.group7.mco2.models.DeckItem
 
 class DeckAdapter(
     private val deckItems: List<DeckItem>,
-    private val clickListener: (DeckItem) -> Unit
+    private val clickListener: (DeckItem) -> Unit // Normal click listener
 ) : RecyclerView.Adapter<DeckAdapter.DeckViewHolder>() {
 
     inner class DeckViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val ivDeckImage: ImageButton = view.findViewById(R.id.ivDeckImage)
-        val tvDeckTitle: TextView = view.findViewById(R.id.tvDeckTitle)
+        private val ivDeckImage: ImageButton = view.findViewById(R.id.ivDeckImage)
+        private val tvDeckTitle: TextView = view.findViewById(R.id.tvDeckTitle)
 
         init {
+            // Normal click behavior
             view.setOnClickListener {
                 clickListener(deckItems[adapterPosition])
             }
         }
 
         fun bind(deckItem: DeckItem, context: Context) {
-            tvDeckTitle.text = deckItem.getDeckTitle()
+            tvDeckTitle.text = deckItem.deckTitle
             Glide.with(context)
-                .load(deckItem.getDeckImage())
-                .placeholder(R.drawable.quickflipbatteryicon)
+                .load(deckItem.deckImage)
+                .placeholder(R.drawable.quickflipcutedeck)
                 .into(ivDeckImage)
         }
     }

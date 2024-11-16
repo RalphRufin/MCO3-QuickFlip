@@ -69,17 +69,6 @@ class DeckActivity : BaseActivity() {
             footer.visibility = View.VISIBLE // Show the footer in portrait mode
         }
 
-        setupRecyclerView()
-    }
-
-    private fun setupRecyclerView() {
-
-        val adapter = DeckAdapter(
-            deckItems = TODO(),
-            clickListener = TODO()
-        )
-        rvDecks.layoutManager = GridLayoutManager(this, 3)
-        rvDecks.adapter = adapter
     }
 
 

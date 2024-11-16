@@ -3,38 +3,51 @@ package com.mobdeve.s20.group7.mco2.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.mobdeve.s20.group7.mco2.models.CardItem;
+
 import java.util.ArrayList;
-import java.util.List;
 
 public class DeckItem implements Parcelable {
+    private String id;  // Firestore document ID
     private String deckImage;
     private String deckTitle;
     private ArrayList<CardItem> cardItems;
+    private boolean isPublic;
 
-    // No-argument constructor for Firestore and default instantiation
+    // Default constructor (required for Firebase and manual initialization)
     public DeckItem() {
+        this.id = "";
         this.deckImage = "";
         this.deckTitle = "";
         this.cardItems = new ArrayList<>();
+        this.isPublic = false;
     }
 
-    public DeckItem(String deckImage, String deckTitle, ArrayList<CardItem> cardItems) {
+    // Parameterized constructor
+    public DeckItem(String id, String deckImage, String deckTitle, ArrayList<CardItem> cardItems, boolean isPublic) {
+        this.id = id;
         this.deckImage = deckImage;
         this.deckTitle = deckTitle;
         this.cardItems = cardItems;
+        this.isPublic = isPublic;
     }
 
+    // Parcelable implementation
     protected DeckItem(Parcel in) {
+        id = in.readString();
         deckImage = in.readString();
         deckTitle = in.readString();
-        cardItems = in.createTypedArrayList(CardItem.CREATOR); // Reading the CardItem list
+        cardItems = in.createTypedArrayList(CardItem.CREATOR);
+        isPublic = in.readByte() != 0;
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(deckImage);
         dest.writeString(deckTitle);
-        dest.writeTypedList(cardItems); // Writing the CardItem list
+        dest.writeTypedList(cardItems);
+        dest.writeByte((byte) (isPublic ? 1 : 0));
     }
 
     @Override
@@ -54,6 +67,15 @@ public class DeckItem implements Parcelable {
         }
     };
 
+    // Getters and setters for all fields
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getDeckImage() {
         return deckImage;
     }
@@ -70,11 +92,19 @@ public class DeckItem implements Parcelable {
         this.deckTitle = deckTitle;
     }
 
-    public List<CardItem> getCardItems() {
+    public ArrayList<CardItem> getCardItems() {
         return cardItems;
     }
 
     public void setCardItems(ArrayList<CardItem> cardItems) {
         this.cardItems = cardItems;
+    }
+
+    public boolean isPublic() {
+        return isPublic;
+    }
+
+    public void setPublic(boolean aPublic) {
+        isPublic = aPublic;
     }
 }

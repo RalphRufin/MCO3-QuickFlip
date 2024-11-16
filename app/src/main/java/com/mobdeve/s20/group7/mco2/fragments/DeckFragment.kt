@@ -12,6 +12,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.NumberPicker
+import android.widget.Switch
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -68,7 +69,7 @@ class DeckFragment : Fragment() {
         userSessionManager = UserSessionManager(requireContext())
 
         deckRecyclerView = view.findViewById(R.id.rvDecks)
-        deckRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
+        deckRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
 
         view.findViewById<View>(R.id.addDeckButton).setOnClickListener {
             showAddDeckDialog()  // Show the dialog to add a deck
@@ -87,9 +88,10 @@ class DeckFragment : Fragment() {
                     deckItems = mutableListOf()
                     for (document in documents) {
                         val item = document.toObject(DeckItem::class.java)
+                        item.id = document.id  // Save the Firestore document ID
                         deckItems.add(item)
                     }
-                    setupAdapter()  // Set up the RecyclerView adapter with loaded data
+                    setupAdapter()
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error loading deck items", e)
@@ -108,13 +110,11 @@ class DeckFragment : Fragment() {
         }
     }
 
-
-
-
-
     private fun showAddDeckDialog() {
         val builder = AlertDialog.Builder(requireContext())
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_deck, null)
+
+        val deckPublicSwitch = dialogView.findViewById<Switch>(R.id.deckPublicSwitch)
 
         val deckNameEditText = dialogView.findViewById<EditText>(R.id.deckNameEditText)
         deckImageView = dialogView.findViewById(R.id.deckImageView)  // Use the class-level reference
@@ -144,7 +144,8 @@ class DeckFragment : Fragment() {
                     "userId" to auth.currentUser?.uid,
                     "deckImage" to deckImage,
                     "deckTitle" to deckName,
-                    "cardItems" to cardItems
+                    "cardItems" to cardItems,
+                    "isPublic" to deckPublicSwitch.isChecked // Add isPublic to the deck data
                 )
 
                 // Add the deck to Firestore

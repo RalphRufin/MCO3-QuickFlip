@@ -7,14 +7,40 @@
     android:padding="16dp">
 
     <!-- Question Header -->
-    <TextView
-        android:id="@+id/tvQuestion"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sample Question"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:paddingBottom="8dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
+
+        <!-- Question Text -->
+        <TextView
+            android:id="@+id/tvQuestion"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Sample Question"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/black" />
+
+        <ImageButton
+            android:id="@+id/btnQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/quickflipedittexticon"
+            android:contentDescription="Quick Flip Edit"
+            android:background="?android:attr/selectableItemBackgroundBorderless"
+            android:layout_marginStart="8dp"
+            android:layout_gravity="center_vertical" />
+
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
 
     <!-- Collapsible Answer Section -->
     <TextView
@@ -23,6 +49,9 @@
         android:layout_height="wrap_content"
         android:text="Sample Answer"
         android:visibility="gone"
+        android:layout_marginStart="10dp"
         android:textSize="14sp"
         android:textColor="@android:color/darker_gray" />
+
+
 </LinearLayout>

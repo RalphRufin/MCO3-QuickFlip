@@ -139,4 +139,22 @@
             android:layout_margin="10dp"
             android:onClick="onGoogleLoginClick"/>
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/loadingView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        android:background="#80000000">
+
+        <!-- Spinning Image -->
+        <ImageView
+            android:id="@+id/loadingImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:src="@drawable/quickfliplogoicon" /> <!-- Replace with your own image -->
+
+    </FrameLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

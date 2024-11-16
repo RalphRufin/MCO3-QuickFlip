@@ -22,7 +22,6 @@ class TestActivity : BaseActivity() {
         btnShare = findViewById(R.id.playBtn)
         rvDecks = findViewById(R.id.rvDecks)
 
-        setupRecyclerView()
         setupClickListeners()
     }
 
@@ -32,15 +31,7 @@ class TestActivity : BaseActivity() {
             startActivity(intent)
         }
     }
-    private fun setupRecyclerView() {
-        
-        val adapter = DeckAdapter(
-            clickListener = TODO(),
-            deckItems = TODO()
-        )
-        rvDecks.layoutManager = GridLayoutManager(this, 3)
-        rvDecks.adapter = adapter
-    }
+
 
 
 }

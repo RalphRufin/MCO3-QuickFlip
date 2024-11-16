@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:ignore="UseSwitchCompatOrMaterialXml">
 
     <EditText
         android:id="@+id/deckNameEditText"
@@ -20,7 +22,7 @@
         <ImageView
             android:id="@+id/deckImageView"
             android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_height="140dp"
             android:layout_gravity="center"
             android:layout_marginTop="16dp"
             android:contentDescription="Deck Image"
@@ -32,15 +34,51 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="16dp"
-            android:text="Select Image" />
+            android:layout_marginTop="16dp"
+            android:backgroundTint="#1591EA"
+            android:text="Select a New Deck Icon"
+            android:textColor="@android:color/white" />
 
     </LinearLayout>
 
-    <NumberPicker
-        android:id="@+id/cardCountPicker"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp" />
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set the max amount of cards in the deck:"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <NumberPicker
+            android:id="@+id/cardCountPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp">
+
+        <Switch
+            android:id="@+id/deckPublicSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Make this deck public for others to use"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    </LinearLayout>
 
 </LinearLayout>
