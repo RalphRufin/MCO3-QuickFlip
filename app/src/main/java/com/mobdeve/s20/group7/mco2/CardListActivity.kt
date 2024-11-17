@@ -1,6 +1,7 @@
 package com.mobdeve.s20.group7.mco2
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -73,6 +74,13 @@ class CardListActivity : AppCompatActivity() {
         // Set up Edit Deck button
         findViewById<Button>(R.id.btnEditDeck).setOnClickListener {
             showEditDeckDialog()
+        }
+
+        // In CardListActivity.kt
+        findViewById<Button>(R.id.btnViewCards).setOnClickListener {
+            val intent = Intent(this, CardViewerActivity::class.java)
+            intent.putParcelableArrayListExtra("card_items", cardItems)
+            startActivity(intent)
         }
     }
 
