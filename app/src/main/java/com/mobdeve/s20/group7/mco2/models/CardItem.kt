@@ -4,8 +4,8 @@ import android.os.Parcel
 import android.os.Parcelable
 
 data class CardItem(
-    val question: String = "",  // Default values to prevent issues if Firestore doesn't provide them
-    val answer: String = ""     // Default values to prevent issues if Firestore doesn't provide them
+    var question: String = "",  // Default values to prevent issues if Firestore doesn't provide them
+    var answer: String = ""     // Default values to prevent issues if Firestore doesn't provide them
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(

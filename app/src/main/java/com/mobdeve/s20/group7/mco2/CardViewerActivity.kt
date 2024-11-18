@@ -47,7 +47,6 @@ class CardViewerActivity : AppCompatActivity(), SensorEventListener {
     private var lastUpdate: Long = 0
     private val SHAKE_THRESHOLD = 800
     private val SWIPE_THRESHOLD = 30f
-    // Gesture tracking variables
     private var initialTouchY = 0f
     private var lastTouchY = 0f
     private var isMultiTouch = false

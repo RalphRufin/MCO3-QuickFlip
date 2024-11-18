@@ -6,9 +6,11 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.Switch
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -35,8 +37,12 @@ class CardListActivity : AppCompatActivity() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var auth: FirebaseAuth
 
-    private lateinit var deckItem: DeckItem  // Store the current deck item
-    private var deckId: String? = null      // Store the Firestore ID of the current deck
+    private lateinit var deckItem: DeckItem
+    private var deckId: String? = null
+
+    private lateinit var tvQuestion: TextView
+    private lateinit var tvAnswer: TextView
+    private lateinit var btnQuestion: ImageButton
 
     companion object {
         private const val DEFAULT_IMAGE_URL = "quickflipcutedeck.png"  // Your default image
@@ -49,6 +55,8 @@ class CardListActivity : AppCompatActivity() {
         // Initialize Firestore and Auth
         firestore = FirebaseFirestore.getInstance()
         auth = FirebaseAuth.getInstance()
+
+
 
         // Get DeckItem from intent
         deckItem = intent.getParcelableExtra("deck_item") ?: DeckItem("", "", "", ArrayList<CardItem>(), false)
@@ -68,7 +76,9 @@ class CardListActivity : AppCompatActivity() {
         rvCards.layoutManager = LinearLayoutManager(this)
 
         // Set up adapter
-        cardAdapter = CardAdapter(cardItems)
+        cardAdapter = CardAdapter(cardItems) { position ->
+            showEditCardDialog(position) // Pass the edit callback to handle card edits
+        }
         rvCards.adapter = cardAdapter
 
         // Set up Edit Deck button
@@ -118,7 +128,7 @@ class CardListActivity : AppCompatActivity() {
 
         selectedImageUrl = deckItem.deckImage
 
-        // Set up delete button
+
         deleteDeckButton.setOnClickListener {
             AlertDialog.Builder(this)
                 .setTitle("Delete Deck")
@@ -183,6 +193,67 @@ class CardListActivity : AppCompatActivity() {
             }
             .show()
     }
+
+    private fun showEditCardDialog(position: Int) {
+        val cardItem = cardItems[position] // Reference the mutable list's item
+        val builder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_question, null)
+
+        val etEditQuestion = dialogView.findViewById<EditText>(R.id.etEditQuestion)
+        val etEditAnswer = dialogView.findViewById<EditText>(R.id.etEditAnswer)
+
+        // Pre-fill the dialog with the current card data
+        etEditQuestion.setText(cardItem.question)
+        etEditAnswer.setText(cardItem.answer)
+
+        builder.setView(dialogView)
+            .setTitle("Edit Card")
+            .setPositiveButton("Save") { _, _ ->
+                val updatedQuestion = etEditQuestion.text.toString()
+                val updatedAnswer = etEditAnswer.text.toString()
+
+                // Update the card and notify the adapter
+                cardItem.question = updatedQuestion
+                cardItem.answer = updatedAnswer
+                cardAdapter.notifyItemChanged(position) // Notify the adapter of the update
+
+                // Update Firestore with the new card data
+                firestore.collection("deck_items").document(deckId!!)
+                    .update("cardItems", cardItems)
+                    .addOnSuccessListener {
+                        Log.d("CardListActivity", "Card updated successfully")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("CardListActivity", "Error updating card", e)
+                    }
+            }
+            .setNegativeButton("Cancel") { dialog, _ -> dialog.dismiss() }
+            .show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (deckId.isNullOrEmpty()) return
+
+        firestore.collection("deck_items").document(deckId!!)
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    deckItem = document.toObject(DeckItem::class.java) ?: return@addOnSuccessListener
+                    cardItems.clear()
+                    cardItems.addAll(deckItem.cardItems as ArrayList<CardItem>)
+                    cardAdapter.notifyDataSetChanged()
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("CardListActivity", "Error fetching updated deck: ${e.message}", e)
+            }
+    }
+
+
+
+
 
 
 }
