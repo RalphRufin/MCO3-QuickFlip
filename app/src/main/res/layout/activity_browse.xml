@@ -66,7 +66,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/deck_recycler_view"
             android:layout_width="330dp"
-            android:layout_height="wrap_content"
+            android:layout_height="300dp"
             android:layout_marginTop="16dp"
             android:background="#EFF5F9"
             app:layout_constraintEnd_toEndOf="parent"
@@ -80,7 +80,8 @@
             android:contentDescription="@string/footer_background"
             android:scaleType="fitXY"
             android:src="@drawable/quickflipfooterwaveelement"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:layout_editor_absoluteX="0dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

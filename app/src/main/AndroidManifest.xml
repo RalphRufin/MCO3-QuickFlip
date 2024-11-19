@@ -43,6 +43,8 @@
         <activity android:name=".TestActivity"/>
         <activity android:name=".CardListActivity" />
         <activity android:name=".CardViewerActivity" />
+        <activity android:name=".CardTestActivity" />
+        <activity android:name=".ImportDeckActivity"/>
 
     </application>
 

@@ -10,7 +10,7 @@ import com.mobdeve.s20.group7.mco2.models.CardItem
 
 class CardAdapter(
     private val cardItems: List<CardItem>, // List of cards
-    private val onEditClick: (Int) -> Unit // Callback for the edit button click
+    private val onEditClick: ((Int) -> Unit)? = null // Nullable callback for edit button
 ) : RecyclerView.Adapter<CardAdapter.CardViewHolder>() {
 
     inner class CardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -31,9 +31,14 @@ class CardAdapter(
                     if (answerTextView.visibility == View.GONE) View.VISIBLE else View.GONE
             }
 
-            // Handle edit button click
-            editButton.setOnClickListener {
-                onEditClick(position) // Notify the activity about the click
+            // Configure edit button
+            if (onEditClick != null) {
+                editButton.visibility = View.VISIBLE // Show edit button in editable mode
+                editButton.setOnClickListener {
+                    onEditClick?.let { it1 -> it1(position) } // Notify the activity about the click
+                }
+            } else {
+                editButton.visibility = View.GONE // Hide edit button in non-editable mode
             }
         }
     }

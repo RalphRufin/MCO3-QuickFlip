@@ -44,6 +44,8 @@ class CardListActivity : AppCompatActivity() {
     private lateinit var tvAnswer: TextView
     private lateinit var btnQuestion: ImageButton
 
+    private lateinit var testButton: ImageButton
+
     companion object {
         private const val DEFAULT_IMAGE_URL = "quickflipcutedeck.png"  // Your default image
     }
@@ -92,6 +94,19 @@ class CardListActivity : AppCompatActivity() {
             intent.putParcelableArrayListExtra("card_items", cardItems)
             startActivity(intent)
         }
+
+        testButton = findViewById(R.id.TestButton)
+
+        testButton.setOnClickListener {
+            if (cardItems.isNotEmpty()) {
+                val intent = Intent(this, CardTestActivity::class.java)
+                intent.putParcelableArrayListExtra("card_items", cardItems)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No cards available for testing.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
     }
 
     private fun showEditDeckDialog() {

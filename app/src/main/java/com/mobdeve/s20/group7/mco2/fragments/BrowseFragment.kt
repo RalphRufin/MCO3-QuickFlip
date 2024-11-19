@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobdeve.s20.group7.mco2.CardListActivity
 import com.mobdeve.s20.group7.mco2.DeckAdapter
+import com.mobdeve.s20.group7.mco2.ImportDeckActivity
 import com.mobdeve.s20.group7.mco2.R
 import com.mobdeve.s20.group7.mco2.models.DeckItem
 
@@ -91,7 +92,7 @@ class BrowseFragment : Fragment() {
     }
 
     private fun navigateToCardList(deckItem: DeckItem) {
-        val intent = Intent(requireContext(), CardListActivity::class.java)
+        val intent = Intent(requireContext(), ImportDeckActivity::class.java)
         intent.putExtra("deck_item", deckItem)
         startActivity(intent)
     }
