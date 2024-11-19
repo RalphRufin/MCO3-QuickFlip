@@ -58,9 +58,12 @@ class ImportDeckActivity : AppCompatActivity() {
     private fun importDeckToFirestore() {
         val firestore = FirebaseFirestore.getInstance()
 
-        // Prepare the deck data
+
+        val newDeckId = firestore.collection("deck_items").document().id
+
+        // Prepare the new deck data for the user's collection
         val deckData = hashMapOf(
-            "id" to deckItem.id,
+            "id" to newDeckId,
             "deckImage" to deckItem.deckImage,
             "deckTitle" to deckItem.deckTitle,
             "isPublic" to deckItem.isPublic,
@@ -68,10 +71,10 @@ class ImportDeckActivity : AppCompatActivity() {
         )
 
         firestore.collection("deck_items")
-            .document(deckItem.id)
+            .document(newDeckId)
             .set(deckData)
             .addOnSuccessListener {
-                val cardCollection = firestore.collection("deck_items").document(deckItem.id).collection("cards")
+                val cardCollection = firestore.collection("deck_items").document(newDeckId).collection("cards")
 
                 for (card in deckItem.cardItems) {
                     val cardData = hashMapOf(
