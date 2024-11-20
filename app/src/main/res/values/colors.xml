@@ -5,4 +5,7 @@
     <color name="nav_item_background">#053574</color>
     <color name="light_gray">#ECECEC </color>
     <color name="fig_blue">#0D99FF</color>
+    <color name="mission_completed">#E8F5E9</color>
+    <color name="mission_incomplete">#FFFFFF</color>
+
 </resources>

@@ -8,7 +8,8 @@ class User(
     var email: String = "",
     var profilePicUrl: String = "",
     var authMethod: String = "",
-    var deckItems: ArrayList<DeckItem> = ArrayList()
+    var deckItems: ArrayList<DeckItem> = ArrayList(),
+    var points: Int = 0  // Added points field
 ) : Parcelable {
 
     constructor(parcel: Parcel) : this(
@@ -16,7 +17,8 @@ class User(
         email = parcel.readString() ?: "",
         profilePicUrl = parcel.readString() ?: "",
         authMethod = parcel.readString() ?: "",
-        deckItems = parcel.createTypedArrayList(DeckItem.CREATOR) ?: ArrayList()
+        deckItems = parcel.createTypedArrayList(DeckItem.CREATOR) ?: ArrayList(),
+        points = parcel.readInt()  // Read points from parcel
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
@@ -25,13 +27,13 @@ class User(
         parcel.writeString(profilePicUrl)
         parcel.writeString(authMethod)
         parcel.writeTypedList(deckItems)
+        parcel.writeInt(points)  // Write points to parcel
     }
 
     override fun describeContents(): Int = 0
 
     companion object CREATOR : Parcelable.Creator<User> {
         override fun createFromParcel(parcel: Parcel): User = User(parcel)
-
         override fun newArray(size: Int): Array<User?> = arrayOfNulls(size)
     }
 }

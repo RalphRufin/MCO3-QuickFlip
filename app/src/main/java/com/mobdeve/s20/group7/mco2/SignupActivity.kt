@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.mobdeve.s20.group7.mco2.models.DeckItem
 import com.mobdeve.s20.group7.mco2.utils.FirebaseHelper
 
 class SignupActivity : AppCompatActivity() {
@@ -144,20 +145,37 @@ class SignupActivity : AppCompatActivity() {
         authMethod: String,
         profilePicUrl: String = ""
     ) {
-        firebaseHelper.createNewUser(
-            uid = uid,
-            username = username,
-            email = email,
-            authMethod = authMethod,
-            profilePicUrl = profilePicUrl
-        ).addOnSuccessListener {
-            Log.d(TAG, "User data saved successfully")
-            Toast.makeText(baseContext, "Signup successful!", Toast.LENGTH_SHORT).show()
-            navigateToLogin() // Navigate to MainActivity upon successful data save
-        }.addOnFailureListener { e ->
-            Log.w(TAG, "Error saving user data", e)
-            Toast.makeText(baseContext, "Error saving user data", Toast.LENGTH_SHORT).show()
-        }
+        val userData = hashMapOf(
+            "username" to username,
+            "email" to email,
+            "authMethod" to authMethod,
+            "profilePicUrl" to profilePicUrl,
+            "points" to 0,  // Initialize points to 0
+            "deckItems" to ArrayList<DeckItem>()
+        )
+
+        firebaseHelper.db.collection("users").document(uid)
+            .set(userData)
+            .addOnSuccessListener {
+                // Initialize missions document
+                firebaseHelper.db.collection("users").document(uid)
+                    .collection("missions")
+                    .document("daily")
+                    .set(mapOf(
+                        "login" to false,
+                        "test1Deck" to false,
+                        "test2Decks" to false,
+                        "lastResetTime" to System.currentTimeMillis()
+                    ))
+                    .addOnSuccessListener {
+                        Log.d(TAG, "User data and missions saved successfully")
+                        Toast.makeText(baseContext, "Signup successful!", Toast.LENGTH_SHORT).show()
+                        navigateToLogin()
+                    }
+            }.addOnFailureListener { e ->
+                Log.w(TAG, "Error saving user data", e)
+                Toast.makeText(baseContext, "Error saving user data", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun signInWithGoogle() {

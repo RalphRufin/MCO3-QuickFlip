@@ -138,8 +138,18 @@ class LoginActivity : AppCompatActivity() {
                     profilePicUrl = firebaseUser.photoUrl?.toString() ?: "",
                     authMethod = authMethod,
                     deckItems = (document.get("deckItems") as? List<DeckItem>)?.let { ArrayList(it) }
-                        ?: ArrayList()
+                        ?: ArrayList(),
+                    points = document.getLong("points")?.toInt() ?: 0  // Get points from Firestore
                 )
+
+                // Update login mission status
+                db.collection("users")
+                    .document(firebaseUser.uid)
+                    .collection("missions")
+                    .document("daily")
+                    .update(mapOf(
+                        "login" to true
+                    )).await()
 
                 withContext(Dispatchers.Main) {
                     sessionManager.saveUserSession(user)

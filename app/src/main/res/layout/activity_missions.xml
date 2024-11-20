@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <!-- Header Background -->
+    <ImageView
+        android:id="@+id/headerElement"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:background="@drawable/waveback"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/header_background"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Profile Container -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/missioncontainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintTop_toTopOf="@+id/headerElement"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="180dp">
+
+        <!-- All elements inside the container -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/missionsBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/quickflipmissionscontainer"
+                android:scaleType="centerCrop" />
+
+            <!-- Title -->
+            <TextView
+                android:id="@+id/missionsTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Daily Missions"
+                android:textSize="24sp"
+                android:padding="16dp"
+                android:layout_marginTop="30dp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- Points Display -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/pointsDisplayCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <TextView
+                    android:id="@+id/pointsDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Points: 0"
+                    android:padding="12dp"
+                    android:textSize="18sp"
+                    android:background="@color/white"
+                    android:textColor="@color/black" />
+            </androidx.cardview.widget.CardView>
+
+            <!-- Timer Display -->
+            <TextView
+                android:id="@+id/timerDisplay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Resets in: 5:00"
+                android:textSize="16sp"
+                app:layout_constraintTop_toBottomOf="@id/missionsTitle"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <!-- Login Mission Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/loginMissionCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/timerDisplay">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/quickflipmissionlogin"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:text="Login to QuickFlip"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/loginCompletedIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/quickflipmissioncomplete"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Test 1 Deck Mission Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/test1DeckMissionCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/loginMissionCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/quickflipmissiontest1"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:text="Test 1 Deck"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/test1DeckCompletedIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/quickflipmissioncomplete"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Test 2 Decks Mission Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/test2DecksMissionCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toBottomOf="@id/test1DeckMissionCard">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/quickflipmissiontest2"
+                        android:layout_gravity="center_vertical" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginStart="16dp"
+                        android:text="Test 2 Different Decks"
+                        android:textSize="16sp" />
+
+                    <ImageView
+                        android:id="@+id/test2DecksCompletedIcon"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/quickflipmissioncomplete"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Reward Info -->
+            <TextView
+                android:id="@+id/rewardInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Complete all missions to earn 60 points!"
+                android:textSize="16sp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@id/test2DecksMissionCard"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <!-- Claim Rewards Button -->
+            <Button
+                android:id="@+id/claimRewardsButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Claim Rewards"
+                android:enabled="false"
+                android:background="#EAA221"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/rewardInfo" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

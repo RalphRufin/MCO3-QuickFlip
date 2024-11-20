@@ -99,6 +99,11 @@ class CardListActivity : AppCompatActivity() {
 
         testButton.setOnClickListener {
             if (cardItems.isNotEmpty()) {
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                userId?.let {
+                    MissionsActivity.updateDeckTestMission(it, 1)
+                    Toast.makeText(this, "Deck tested! Mission updated.", Toast.LENGTH_SHORT).show()
+                }
                 val intent = Intent(this, CardTestActivity::class.java)
                 intent.putParcelableArrayListExtra("card_items", cardItems)
                 startActivity(intent)

@@ -6,7 +6,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 class FirebaseHelper private constructor() {
 
-    private val db = FirebaseFirestore.getInstance()
+    val db = FirebaseFirestore.getInstance()
 
     fun createNewUser(
         uid: String,
