@@ -1,91 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Header Background -->
+    <ImageView
+        android:id="@+id/headerElement"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@android:color/white">
+        android:layout_height="250dp"
+        android:background="@drawable/waveback"
+        android:scaleType="fitXY"
+        android:contentDescription="@string/header_background"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/headerElement"
+    <!-- Store Container -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/storeContainer"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="8dp"
+        app:layout_constraintTop_toTopOf="@+id/headerElement"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="180dp">
+
+        <!-- All elements inside the container -->
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="550dp"
-            android:src="@drawable/quickflipheaderwaveelement"
-            android:scaleType="fitXY"
-            app:layout_constraintTop_toTopOf="parent"
-            android:contentDescription="@string/header_background" />
+            android:layout_height="wrap_content">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/toolbar_base"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toTopOf="parent" />
+            <ImageView
+                android:id="@+id/storeBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/quickflipstorecontainer"
+                android:scaleType="centerCrop" />
 
-        <TextView
-            android:id="@+id/tvPoints"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/points_180"
-            android:textColor="@android:color/white"
-            android:background="@drawable/rounded_button_background"
-            android:padding="8dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="100dp"
-            android:textStyle="bold"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"/>
+            <!-- Title -->
+            <TextView
+                android:id="@+id/storeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Store"
+                android:textColor="@color/black"
+                android:textSize="24sp"
+                android:paddingTop="16dp"
+                android:layout_marginTop="30dp"
+                android:layout_margin="30dp"
+                android:textStyle="bold"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/tvStoreTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/store"
-            android:textColor="#053574"
-            android:textStyle="bold"
-            android:textSize="24sp"
-            android:layout_marginStart="150dp"
-            android:layout_marginTop="100dp"
-            app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintStart_toStartOf="parent" />
+            <!-- Points Display -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/pointsDisplayCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_margin="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvStoreItems"
-            android:layout_width="330dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/tvStoreTitle"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:background="#EFF5F9"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="16dp"
-            android:paddingStart="30dp"
-            android:paddingEnd="16dp" />
+                <TextView
+                    android:id="@+id/pointsDisplay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:padding="12dp"
+                    android:text="Points: 0"
+                    android:textColor="@color/black"
+                    android:textSize="18sp" />
 
-        <ImageView
-            android:id="@+id/footerElement"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:src="@drawable/quickflipfooterwaveelement"
-            android:scaleType="fitXY"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:contentDescription="@string/footer_background" />
+            </androidx.cardview.widget.CardView>
+            <TextView
+                android:id="@+id/storeSubtitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="30dp"
+                android:paddingTop="8dp"
+                android:textColor="@color/black"
+                android:text="Spend your points on items"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/storeTitle" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvStoreItems"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintTop_toBottomOf="@id/storeTitle" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
-
-</androidx.drawerlayout.widget.DrawerLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

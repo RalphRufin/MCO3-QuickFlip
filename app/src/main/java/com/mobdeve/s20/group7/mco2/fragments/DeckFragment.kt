@@ -13,6 +13,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.NumberPicker
 import android.widget.Switch
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobdeve.s20.group7.mco2.CardListActivity
 import com.mobdeve.s20.group7.mco2.DeckAdapter
@@ -34,10 +36,12 @@ class DeckFragment : Fragment() {
     private lateinit var firestore: FirebaseFirestore
     private lateinit var deckRecyclerView: RecyclerView
     private lateinit var deckItems: MutableList<DeckItem>
-    private lateinit var deckImageView: ImageView  // This is the ImageView for showing the selected image
-    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>  // Image picker launcher
+    private lateinit var deckImageView: ImageView
+    private lateinit var imagePickerLauncher: ActivityResultLauncher<String>
+    private lateinit var cardCountPicker: NumberPicker
 
-    private var selectedImageUrl: String? = null  // Store the selected image URL
+    private var selectedImageUrl: String? = null
+    private var maxDeckLimit: Int = 20 // Default limit
 
     companion object {
         private const val TAG = "DeckFragment"
@@ -57,8 +61,8 @@ class DeckFragment : Fragment() {
         // Initialize image picker launcher
         imagePickerLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                selectedImageUrl = uri.toString()  // Store the image URL
-                Glide.with(this)  // Using Glide to load the image into the ImageView
+                selectedImageUrl = uri.toString()
+                Glide.with(this)
                     .load(uri)
                     .into(deckImageView)
             }
@@ -72,10 +76,30 @@ class DeckFragment : Fragment() {
         deckRecyclerView.layoutManager = GridLayoutManager(requireContext(), 3)
 
         view.findViewById<View>(R.id.addDeckButton).setOnClickListener {
-            showAddDeckDialog()  // Show the dialog to add a deck
+            fetchMaxDeckLimit()
         }
 
-        loadDeckItems()  // Load deck items from Firestore
+        loadDeckItems()
+    }
+
+    private fun fetchMaxDeckLimit() {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    maxDeckLimit = document.getLong("maxDeckLimit")?.toInt() ?: 20
+                    showAddDeckDialog()
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error fetching max deck limit", e)
+                    maxDeckLimit = 20
+                    showAddDeckDialog()
+                }
+        } else {
+            Log.e(TAG, "User ID not found")
+            maxDeckLimit = 20
+            showAddDeckDialog()
+        }
     }
 
     private fun loadDeckItems() {
@@ -88,7 +112,7 @@ class DeckFragment : Fragment() {
                     deckItems = mutableListOf()
                     for (document in documents) {
                         val item = document.toObject(DeckItem::class.java)
-                        item.id = document.id  // Save the Firestore document ID
+                        item.id = document.id
                         deckItems.add(item)
                     }
                     setupAdapter()
@@ -107,6 +131,44 @@ class DeckFragment : Fragment() {
             val intent = Intent(context, CardListActivity::class.java)
             intent.putExtra("deck_item", selectedDeck)
             context.startActivity(intent)
+
+            // Update recent decks in Firestore
+            updateRecentDecks(selectedDeck.id)
+        }
+    }
+
+    private fun updateRecentDecks(deckId: String) {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            val userRef = firestore.collection("users").document(userId)
+
+            firestore.runTransaction { transaction ->
+                val userDocument = transaction.get(userRef)
+
+                // Get current recent decks or initialize empty list
+                val currentRecentDecks = userDocument.get("recentDecks") as? MutableList<String>
+                    ?: mutableListOf()
+
+                // Remove the deck if it already exists to avoid duplicates
+                currentRecentDecks.remove(deckId)
+
+                // Add the new deck ID
+                currentRecentDecks.add(deckId)
+
+                // If more than 3 decks, remove the first (oldest) one
+                if (currentRecentDecks.size > 3) {
+                    currentRecentDecks.removeAt(0)
+                }
+
+                // Update the document with new recent decks
+                transaction.update(userRef, "recentDecks", currentRecentDecks)
+            }
+                .addOnSuccessListener {
+                    Log.d(TAG, "Recent decks updated successfully")
+                }
+                .addOnFailureListener { e ->
+                    Log.e(TAG, "Error updating recent decks", e)
+                }
         }
     }
 
@@ -115,18 +177,22 @@ class DeckFragment : Fragment() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_add_deck, null)
 
         val deckPublicSwitch = dialogView.findViewById<Switch>(R.id.deckPublicSwitch)
-
         val deckNameEditText = dialogView.findViewById<EditText>(R.id.deckNameEditText)
-        deckImageView = dialogView.findViewById(R.id.deckImageView)  // Use the class-level reference
+        deckImageView = dialogView.findViewById(R.id.deckImageView)
         val selectImageButton = dialogView.findViewById<Button>(R.id.selectImageButton)
-        val cardCountPicker = dialogView.findViewById<NumberPicker>(R.id.cardCountPicker)
+        cardCountPicker = dialogView.findViewById(R.id.cardCountPicker)
 
+        // Set the max value dynamically based on purchased deck limit
         cardCountPicker.minValue = 1
-        cardCountPicker.maxValue = 20
+        cardCountPicker.maxValue = maxDeckLimit
+        cardCountPicker.value = 1 // Default to minimum
+
+        // Show a toast to inform user about the current deck limit
+        Toast.makeText(requireContext(), "Current Deck Limit: $maxDeckLimit", Toast.LENGTH_SHORT).show()
 
         // Set click listener for the "Select Image" button
         selectImageButton.setOnClickListener {
-            launchImagePicker()  // Launch the image picker
+            launchImagePicker()
         }
 
         builder.setView(dialogView)
@@ -145,7 +211,7 @@ class DeckFragment : Fragment() {
                     "deckImage" to deckImage,
                     "deckTitle" to deckName,
                     "cardItems" to cardItems,
-                    "isPublic" to deckPublicSwitch.isChecked // Add isPublic to the deck data
+                    "isPublic" to deckPublicSwitch.isChecked
                 )
 
                 // Add the deck to Firestore
@@ -154,7 +220,7 @@ class DeckFragment : Fragment() {
                         .add(deckData)
                         .addOnSuccessListener {
                             Log.d(TAG, "Deck added successfully")
-                            loadDeckItems()  // Reload deck items
+                            loadDeckItems()
                         }
                         .addOnFailureListener { e ->
                             Log.e(TAG, "Error adding deck", e)
@@ -170,6 +236,6 @@ class DeckFragment : Fragment() {
     }
 
     private fun launchImagePicker() {
-        imagePickerLauncher.launch("image/*")  // Launch image picker for any image type
+        imagePickerLauncher.launch("image/*")
     }
 }

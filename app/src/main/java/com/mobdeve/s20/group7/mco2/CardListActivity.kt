@@ -1,5 +1,6 @@
 package com.mobdeve.s20.group7.mco2
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -40,11 +41,8 @@ class CardListActivity : AppCompatActivity() {
     private lateinit var deckItem: DeckItem
     private var deckId: String? = null
 
-    private lateinit var tvQuestion: TextView
-    private lateinit var tvAnswer: TextView
-    private lateinit var btnQuestion: ImageButton
-
     private lateinit var testButton: ImageButton
+    private var maxDeckLimit: Int = 20
 
     companion object {
         private const val DEFAULT_IMAGE_URL = "quickflipcutedeck.png"  // Your default image
@@ -100,20 +98,51 @@ class CardListActivity : AppCompatActivity() {
         testButton.setOnClickListener {
             if (cardItems.isNotEmpty()) {
                 val userId = FirebaseAuth.getInstance().currentUser?.uid
-                userId?.let {
-                    MissionsActivity.updateDeckTestMission(it, 1)
-                    Toast.makeText(this, "Deck tested! Mission updated.", Toast.LENGTH_SHORT).show()
+                if (userId != null) {
+                    MissionsActivity.updateDeckTestMission(userId, 1) { isSuccess, message ->
+                        if (isSuccess) {
+                            Toast.makeText(this, "Deck tested! Mission updated.", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(this, "Failed to update mission: $message", Toast.LENGTH_SHORT).show()
+                        }
+                    }
+
+                    // Navigate to CardTestActivity with the card items
+                    val intent = Intent(this, CardTestActivity::class.java).apply {
+                        putParcelableArrayListExtra("card_items", cardItems)
+                    }
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "User not authenticated. Please log in again.", Toast.LENGTH_SHORT).show()
                 }
-                val intent = Intent(this, CardTestActivity::class.java)
-                intent.putParcelableArrayListExtra("card_items", cardItems)
-                startActivity(intent)
             } else {
                 Toast.makeText(this, "No cards available for testing.", Toast.LENGTH_SHORT).show()
             }
         }
 
+        fetchMaxDeckLimit()
+
     }
 
+    private fun fetchMaxDeckLimit() {
+        val userId = auth.currentUser?.uid
+        if (userId != null) {
+            firestore.collection("users").document(userId).get()
+                .addOnSuccessListener { document ->
+                    maxDeckLimit = document.getLong("maxDeckLimit")?.toInt() ?: 20
+                    Log.d("CardListActivity", "Max deck limit: $maxDeckLimit")
+                }
+                .addOnFailureListener { e ->
+                    Log.e("CardListActivity", "Error fetching max deck limit", e)
+                    maxDeckLimit = 20
+                }
+        } else {
+            Log.e("CardListActivity", "User ID not found")
+            maxDeckLimit = 20
+        }
+    }
+
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     private fun showEditDeckDialog() {
         if (deckId.isNullOrEmpty()) {
             AlertDialog.Builder(this)
@@ -141,13 +170,16 @@ class CardListActivity : AppCompatActivity() {
             .error(Glide.with(this).load(DEFAULT_IMAGE_URL))
             .into(currentDeckImageView)
 
+        // Dynamically set max card count based on user's purchased limit
         cardCountPicker.minValue = 1
-        cardCountPicker.maxValue = 20
-        cardCountPicker.value = cardItems.size
+        cardCountPicker.maxValue = maxDeckLimit
+        cardCountPicker.value = minOf(cardItems.size, maxDeckLimit)
+
+        // Show a toast to inform user about the current deck limit
+        Toast.makeText(this, "Current Deck Limit: $maxDeckLimit", Toast.LENGTH_SHORT).show()
+
         deckPublicSwitch.isChecked = deckItem.isPublic
-
         selectedImageUrl = deckItem.deckImage
-
 
         deleteDeckButton.setOnClickListener {
             AlertDialog.Builder(this)
@@ -254,6 +286,7 @@ class CardListActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        fetchMaxDeckLimit()
         if (deckId.isNullOrEmpty()) return
 
         firestore.collection("deck_items").document(deckId!!)
