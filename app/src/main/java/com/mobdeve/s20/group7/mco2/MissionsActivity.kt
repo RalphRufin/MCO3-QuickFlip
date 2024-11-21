@@ -131,9 +131,23 @@ class MissionsActivity : AppCompatActivity() {
 
         dailyRef.get().addOnSuccessListener { document ->
             if (document.exists()) {
-                val lastResetTimestamp = document.getTimestamp("lastResetTime")?.toDate()?.time ?: 0L
+                // Safely get the last reset timestamp
+                val lastResetTimestamp = try {
+                    document.getTimestamp("lastResetTime")?.toDate()?.time ?: 0L
+                } catch (e: Exception) {
+                    // If timestamp conversion fails, default to 0
+                    Log.e("MissionsActivity", "Error parsing last reset timestamp: ${e.message}")
+                    0L
+                }
+
                 val currentTime = System.currentTimeMillis()
                 val nextResetTime = getNext3AMTimestamp()
+
+                // If document exists but lastResetTime is invalid, initialize missions
+                if (lastResetTimestamp <= 0) {
+                    initializeMissionsData()
+                    return@addOnSuccessListener
+                }
 
                 // Only reset if we've passed the next reset time
                 if (currentTime >= nextResetTime) {
@@ -149,10 +163,13 @@ class MissionsActivity : AppCompatActivity() {
                     document.data?.let { loadMissions(it) }
                 }
             } else {
+                // If document doesn't exist, initialize missions data
                 initializeMissionsData()
             }
         }.addOnFailureListener { e ->
             Log.e("MissionsActivity", "Failed to fetch mission status: ${e.message}")
+            // As a fallback, try to initialize missions
+            initializeMissionsData()
         }
     }
 
@@ -279,11 +296,11 @@ class MissionsActivity : AppCompatActivity() {
         val dailyRef = db.collection("users").document(userId).collection("missions").document("daily")
 
         val initialData = mapOf(
-            "login" to true, // Start with the "login" mission completed
+            "login" to true,
             "test1Deck" to false,
             "test2Decks" to false,
             "decksTestedToday" to 0L,
-            "lastResetTime" to FieldValue.serverTimestamp(), // Use server time for synchronization
+            "lastResetTime" to FieldValue.serverTimestamp(), // Ensures a proper timestamp is set
             "rewardsClaimed" to false
         )
 
@@ -294,6 +311,8 @@ class MissionsActivity : AppCompatActivity() {
             }
             .addOnFailureListener { e ->
                 Log.e("MissionsActivity", "Error initializing missions: ${e.message}")
+                // Optionally show an error to the user
+                Toast.makeText(this, "Failed to initialize missions", Toast.LENGTH_SHORT).show()
             }
     }
 
