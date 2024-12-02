@@ -169,7 +169,7 @@ class LoginActivity : AppCompatActivity() {
             val credential = GoogleAuthProvider.getCredential(idToken, null)
             val result = auth.signInWithCredential(credential).await()
             result.user?.let { user ->
-                checkUserInFirestore(user)
+                checkUserInFirestore(user) // Ensure the Firestore user data exists
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
@@ -179,28 +179,33 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+
     private suspend fun checkUserInFirestore(user: FirebaseUser) {
         try {
             val document = db.collection("users").document(user.uid).get().await()
             if (document != null && document.exists()) {
+                // Proceed if the user document exists
                 fetchUserDataAndSaveSession(user, "google")
             } else {
+                // If no user document exists, log the user out and show an error
                 withContext(Dispatchers.Main) {
                     auth.signOut()
                     googleSignInClient.signOut().await()
-                    showError("No account found. Please sign up first.")
+                    showError("No account found for this Google login. Please sign up first.")
                     showLoading(false)
                 }
             }
         } catch (e: Exception) {
             withContext(Dispatchers.Main) {
+                // Handle database errors
                 auth.signOut()
-                googleSignInClient.signOut()
+                googleSignInClient.signOut().await()
                 showError("Database error: ${e.message}")
                 showLoading(false)
             }
         }
     }
+
 
     private fun setupGoogleSignIn() {
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

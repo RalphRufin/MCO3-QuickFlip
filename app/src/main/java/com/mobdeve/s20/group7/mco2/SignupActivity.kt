@@ -116,7 +116,27 @@ class SignupActivity : AppCompatActivity() {
             }
         }
 
-        // Create user with email and password
+        // Check if email is already in use
+        auth.fetchSignInMethodsForEmail(email)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    val signInMethods = task.result?.signInMethods
+                    if (signInMethods.isNullOrEmpty()) {
+                        // Email is not in use, proceed with signup
+                        createUser(email, password, username)
+                    } else {
+                        // Email is already in use
+                        emailEditText.error = "Email is already in use"
+                        Toast.makeText(this, "Email is already registered. Please use a different email.", Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Log.w(TAG, "Error checking email existence", task.exception)
+                    Toast.makeText(this, "Error occurred while checking email", Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
+    private fun createUser(email: String, password: String, username: String) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -132,8 +152,7 @@ class SignupActivity : AppCompatActivity() {
                     }
                 } else {
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Signup failed: ${task.exception?.message}",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "Signup failed: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
                 }
             }
     }
@@ -190,7 +209,9 @@ class SignupActivity : AppCompatActivity() {
             try {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(data)
                 val account = task.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(account.idToken!!)
+                val email = account.email ?: ""
+                val idToken = account.idToken ?: ""
+                checkIfEmailExistsInFirestore(email, idToken)
             } catch (e: ApiException) {
                 Log.w(TAG, "Google sign in failed", e)
                 Toast.makeText(this, "Google sign in failed", Toast.LENGTH_SHORT).show()
@@ -198,19 +219,28 @@ class SignupActivity : AppCompatActivity() {
         }
     }
 
-    private fun handleSocialSignInUser(user: FirebaseUser, authMethod: String) {
-        val username = user.displayName ?: "User${System.currentTimeMillis()}"
-        val email = user.email ?: ""
-        val profilePicUrl = user.photoUrl?.toString() ?: ""
-
-        // Save user to database
-        saveUserToDatabase(
-            uid = user.uid,
-            username = username,
-            email = email,
-            authMethod = authMethod,
-            profilePicUrl = profilePicUrl
-        )
+    private fun checkIfEmailExistsInFirestore(email: String, idToken: String) {
+        firebaseHelper.db.collection("users")
+            .whereEqualTo("email", email)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    // Email exists in Firestore, block sign-in
+                    Toast.makeText(
+                        this,
+                        "This email is already registered. Use Log In to continue with this email.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    googleSignInClient.signOut() // Sign out from Google
+                } else {
+                    // Email does not exist, proceed with Google sign-in
+                    firebaseAuthWithGoogle(idToken)
+                }
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error checking email existence", exception)
+                Toast.makeText(this, "Error occurred while checking email", Toast.LENGTH_SHORT).show()
+            }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String) {
@@ -225,6 +255,23 @@ class SignupActivity : AppCompatActivity() {
                     Toast.makeText(baseContext, "Authentication failed.", Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+
+
+    private fun handleSocialSignInUser(user: FirebaseUser, authMethod: String) {
+        val username = user.displayName ?: "User${System.currentTimeMillis()}"
+        val email = user.email ?: ""
+        val profilePicUrl = user.photoUrl?.toString() ?: ""
+
+        // Save user to database
+        saveUserToDatabase(
+            uid = user.uid,
+            username = username,
+            email = email,
+            authMethod = authMethod,
+            profilePicUrl = profilePicUrl
+        )
     }
 
     private fun navigateToLogin() {
