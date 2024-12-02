@@ -1,5 +1,6 @@
 package com.mobdeve.s20.group7.mco2
 
+import MissionResetWorker
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -14,6 +15,10 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.util.Calendar
 import java.util.TimeZone
+import androidx.work.*
+import java.util.concurrent.TimeUnit
+
+
 
 class MissionsActivity : AppCompatActivity() {
     private lateinit var db: FirebaseFirestore
@@ -37,6 +42,8 @@ class MissionsActivity : AppCompatActivity() {
         observeMissionUpdates()
         observeUserPoints()
         startResetTimer()
+
+        scheduleMissionResetNotification()
     }
 
     companion object {
@@ -333,4 +340,17 @@ class MissionsActivity : AppCompatActivity() {
             else ContextCompat.getColor(this, R.color.mission_incomplete)
         )
     }
+
+    private fun scheduleMissionResetNotification() {
+        val currentTime = System.currentTimeMillis()
+        val nextResetTime = getNext3AMTimestamp()
+        val delayInMillis = nextResetTime - currentTime
+
+        val workRequest = OneTimeWorkRequestBuilder<MissionResetWorker>()
+                .setInitialDelay(1, TimeUnit.SECONDS)
+            .build()
+
+        WorkManager.getInstance(this).enqueue(workRequest)
+    }
+
 }

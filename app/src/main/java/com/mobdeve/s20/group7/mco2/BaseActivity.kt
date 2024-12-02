@@ -66,16 +66,6 @@ open class BaseActivity : AppCompatActivity() {
     private fun setupNavigationView() {
         navigationView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
-                R.id.nav_decks -> {
-                    val intent = Intent(this, DeckActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
-                R.id.nav_cardbrowse -> {
-                    val intent = Intent(this, BrowseActivity::class.java)
-                    startActivity(intent)
-                    true
-                }
                 R.id.nav_settings -> {
                     startActivity(Intent(this, SettingsActivity::class.java))
                     true
@@ -86,12 +76,6 @@ open class BaseActivity : AppCompatActivity() {
                 }
                 R.id.nav_support -> {
                     showRatingDialog()
-                    true
-                }
-                R.id.nav_leaderboard -> {
-                    // Create an intent to start LeaderboardActivity
-                    val intent = Intent(this, LeaderboardActivity::class.java)
-                    startActivity(intent)
                     true
                 }
                 else -> false

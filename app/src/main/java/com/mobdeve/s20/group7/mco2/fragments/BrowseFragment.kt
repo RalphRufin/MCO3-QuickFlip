@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.firestore.FirebaseFirestore
 import com.mobdeve.s20.group7.mco2.CardListActivity
 import com.mobdeve.s20.group7.mco2.DeckAdapter
+import com.mobdeve.s20.group7.mco2.GridSpacingItemDecoration
 import com.mobdeve.s20.group7.mco2.ImportDeckActivity
 import com.mobdeve.s20.group7.mco2.R
 import com.mobdeve.s20.group7.mco2.models.DeckItem
@@ -41,7 +42,14 @@ class BrowseFragment : Fragment() {
 
         // Setup RecyclerView
         recyclerView = view.findViewById(R.id.deck_recycler_view)
-        recyclerView.layoutManager = GridLayoutManager(requireContext(), 3) // 2 columns
+        recyclerView.layoutManager = GridLayoutManager(requireContext(), 3) // 3 columns
+        recyclerView.addItemDecoration(
+            GridSpacingItemDecoration(
+                spanCount = 3,
+                spacing = 16,
+                includeEdge = true // Include spacing on the edges
+            )
+        ) // 2 columns
         deckAdapter = DeckAdapter(deckList) { deckItem ->
             navigateToCardList(deckItem)
         }

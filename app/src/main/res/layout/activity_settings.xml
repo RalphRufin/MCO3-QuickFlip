@@ -59,41 +59,6 @@
                 android:layout_height="1dp"
                 android:background="#E0E0E0"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sync"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:textColor="#053574"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="8dp"/>
-
-            <LinearLayout
-                android:id="@+id/syncSection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/sync_frequency"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/syncValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/every_6_hours"
-                    android:textSize="14sp"
-                    android:textColor="#666666"/>
-            </LinearLayout>
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -178,16 +143,6 @@
                 android:layout_height="1dp"
                 android:background="#E0E0E0"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/controls"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:textColor="#053574"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="8dp"/>
-
             <LinearLayout
                 android:id="@+id/gesturesSection"
                 android:layout_width="match_parent"
@@ -217,16 +172,6 @@
                 android:layout_height="1dp"
                 android:background="#E0E0E0"/>
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/backup"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:textColor="#053574"
-                android:layout_marginTop="16dp"
-                android:paddingBottom="8dp"/>
-
             <LinearLayout
                 android:id="@+id/backupSection"
                 android:layout_width="match_parent"
@@ -235,22 +180,7 @@
                 android:background="?attr/selectableItemBackground"
                 android:clickable="true"
                 android:focusable="true"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/auto_backup"
-                    android:textSize="16sp"/>
-
-                <TextView
-                    android:id="@+id/backupValue"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/daily"
-                    android:textSize="14sp"
-                    android:textColor="#666666"/>
-            </LinearLayout>
+                android:padding="16dp"/>
 
         </LinearLayout>
     </ScrollView>

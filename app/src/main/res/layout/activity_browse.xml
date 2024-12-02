@@ -38,8 +38,8 @@
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/deck_recycler_view"
+            app:layout_constraintStart_toStartOf="@+id/deck_recycler_view"
             app:layout_constraintTop_toBottomOf="@id/toolbar">
 
             <EditText
@@ -63,15 +63,20 @@
                 android:src="@drawable/ic_search" />
         </LinearLayout>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/deck_recycler_view"
-            android:layout_width="330dp"
-            android:layout_height="300dp"
+            android:layout_width="321dp"
+            android:layout_height="323dp"
             android:layout_marginTop="16dp"
-            android:background="#EFF5F9"
+            android:background="@color/light_gray"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_bar" />
+            app:layout_constraintTop_toBottomOf="@id/search_bar"
+            app:layout_constraintVertical_bias="0.067"
+            tools:listitem="@layout/deck_item" />
 
         <ImageView
             android:id="@+id/footerElement"

@@ -7,7 +7,11 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.mobdeve.s20.group7.mco2.fragments.HomeFragment"
-        android:label="Home" />
+        android:label="Home" >
+        <action
+            android:id="@+id/action_homeFragment_to_deckFragment"
+            app:destination="@id/deckFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/deckFragment"
