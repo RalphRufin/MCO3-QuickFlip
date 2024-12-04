@@ -15,7 +15,6 @@ class CircularRecyclerViewAdapter(
 ) : RecyclerView.Adapter<CircularRecyclerViewAdapter.DeckViewHolder>() {
 
     companion object {
-        // Large multiplier to create the illusion of infinite scrolling
         private const val INFINITE_SCROLL_MULTIPLIER = 1000
     }
 
@@ -56,7 +55,6 @@ class CircularRecyclerViewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DeckViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.deck_item, parent, false)
-
         return DeckViewHolder(view)
     }
 
@@ -66,5 +64,11 @@ class CircularRecyclerViewAdapter(
         holder.bind(decks[actualPosition])
     }
 
-    override fun getItemCount() = if (decks.isEmpty()) 0 else decks.size * INFINITE_SCROLL_MULTIPLIER
+    override fun getItemCount(): Int {
+        return when {
+            decks.isEmpty() -> 0
+            decks.size == 1 -> 1  // No scrolling for single deck
+            else -> decks.size * 2  // Alternate between decks for more than one deck
+        }
+    }
 }

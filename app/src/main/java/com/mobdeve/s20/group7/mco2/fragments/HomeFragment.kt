@@ -107,7 +107,6 @@ class HomeFragment : Fragment() {
     private fun setupRecentDecksAdapter() {
         // Add a check to handle empty decks list
         if (recentDecks.isEmpty()) {
-            // Optionally, you could show an empty state view or hide the RecyclerView
             recentDecksRecyclerView.visibility = View.GONE
             return
         }
@@ -136,9 +135,16 @@ class HomeFragment : Fragment() {
         // Set the adapter
         recentDecksRecyclerView.adapter = circularAdapter
 
-        // Optional: Scroll to a position near the middle to create infinite scroll illusion
-        if (recentDecks.isNotEmpty()) {
-            recentDecksRecyclerView.scrollToPosition(recentDecks.size * 500)
+        // Scroll behavior based on number of decks
+        when {
+            recentDecks.size == 1 -> {
+                // No scrolling for single deck
+                recentDecksRecyclerView.isNestedScrollingEnabled = false
+            }
+            recentDecks.size >= 2 -> {
+                // Scroll to create an alternating view for multiple decks
+                recentDecksRecyclerView.scrollToPosition(recentDecks.size)
+            }
         }
     }
 
@@ -157,11 +163,11 @@ class HomeFragment : Fragment() {
                 // Remove the deck if it already exists to avoid duplicates
                 currentRecentDecks.remove(deckId)
 
-                // Add the new deck ID
+                // Add the new deck ID at the end
                 currentRecentDecks.add(deckId)
 
                 // If more than 3 decks, remove the first (oldest) one
-                if (currentRecentDecks.size > 3) {
+                while (currentRecentDecks.size > 3) {
                     currentRecentDecks.removeAt(0)
                 }
 
