@@ -2,6 +2,7 @@ package com.mobdeve.s20.group7.mco2
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -49,7 +50,6 @@ class ImportDeckActivity : AppCompatActivity() {
             importDeckToFirestore()
         }
 
-
         viewCardsButton.setOnClickListener {
             openCardViewerActivity()
         }
@@ -57,33 +57,36 @@ class ImportDeckActivity : AppCompatActivity() {
 
     private fun importDeckToFirestore() {
         val firestore = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
 
+        if (userId == null) {
+            Toast.makeText(this, "User is not authenticated!", Toast.LENGTH_LONG).show()
+            return
+        }
 
+        // Generate a new deck ID
         val newDeckId = firestore.collection("deck_items").document().id
 
-        // Prepare the new deck data for the user's collection
+        // Prepare the new deck data, including the cards
         val deckData = hashMapOf(
             "id" to newDeckId,
             "deckImage" to deckItem.deckImage,
             "deckTitle" to deckItem.deckTitle,
             "isPublic" to deckItem.isPublic,
-            "userId" to FirebaseAuth.getInstance().currentUser?.uid // Assign current user as the owner
+            "userId" to userId, // Assign current user as the owner
+            "cardItems" to deckItem.cardItems.map { card ->
+                mapOf(
+                    "question" to card.question,
+                    "answer" to card.answer
+                )
+            } // Embed cards as an array
         )
 
+        // Write the deck document to Firestore
         firestore.collection("deck_items")
             .document(newDeckId)
             .set(deckData)
             .addOnSuccessListener {
-                val cardCollection = firestore.collection("deck_items").document(newDeckId).collection("cards")
-
-                for (card in deckItem.cardItems) {
-                    val cardData = hashMapOf(
-                        "question" to card.question,
-                        "answer" to card.answer
-                    )
-                    cardCollection.add(cardData)
-                }
-
                 Toast.makeText(this, "Deck '${deckItem.deckTitle}' imported successfully!", Toast.LENGTH_LONG).show()
                 finish()
             }
@@ -92,12 +95,13 @@ class ImportDeckActivity : AppCompatActivity() {
             }
     }
 
-    private fun openCardViewerActivity() {
 
+    private fun openCardViewerActivity() {
         if (deckItem.cardItems.isEmpty()) {
             Toast.makeText(this, "No cards available to view!", Toast.LENGTH_SHORT).show()
             return
         }
+
         val intent = Intent(this, CardViewerActivity::class.java)
         intent.putParcelableArrayListExtra("card_items", deckItem.cardItems)
         startActivity(intent)

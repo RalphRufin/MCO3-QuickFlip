@@ -347,7 +347,7 @@ class MissionsActivity : AppCompatActivity() {
         val delayInMillis = nextResetTime - currentTime
 
         val workRequest = OneTimeWorkRequestBuilder<MissionResetWorker>()
-                .setInitialDelay(1, TimeUnit.SECONDS)
+                .setInitialDelay(nextResetTime, TimeUnit.SECONDS)
             .build()
 
         WorkManager.getInstance(this).enqueue(workRequest)

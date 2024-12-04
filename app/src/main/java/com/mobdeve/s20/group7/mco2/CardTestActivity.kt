@@ -9,6 +9,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.animation.addListener
@@ -101,9 +102,9 @@ class CardTestActivity : AppCompatActivity() {
             isShowingQuestion = true
             resetCardAnimation()
         } else {
-            Toast.makeText(this, "You have completed the deck!", Toast.LENGTH_LONG).show()
             stopTimer() // Stop the timer when the deck is completed
             nextButton.isEnabled = false
+            showCompletionPopup() // Show final results
         }
         updateScoreDisplay()
     }
@@ -164,5 +165,18 @@ class CardTestActivity : AppCompatActivity() {
 
     private fun updateScoreDisplay() {
         correctCounter.text = "Correct: $correctAnswers/${shuffledIndices.size}"
+    }
+
+    private fun showCompletionPopup() {
+        val formattedTime = formatElapsedTime(elapsedTime)
+        val message = "You completed the deck!\n\n" +
+                "Final Time: $formattedTime\n" +
+                "Correct Answers: $correctAnswers/${shuffledIndices.size}"
+
+        AlertDialog.Builder(this)
+            .setTitle("Test Completed")
+            .setMessage(message)
+            .setPositiveButton("OK") { dialog, _ -> dialog.dismiss() }
+            .show()
     }
 }

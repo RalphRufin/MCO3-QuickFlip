@@ -123,6 +123,22 @@ class StoreActivity : AppCompatActivity() {
             return
         }
 
+        // Validate purchase prerequisites
+        val prerequisiteId = when (item.id) {
+            "deck_limit_40" -> "deck_limit_30"
+            "deck_limit_50" -> "deck_limit_40"
+            else -> null
+        }
+
+        if (prerequisiteId != null && storeItems.find { it.id == prerequisiteId }?.isPurchased != true) {
+            AlertDialog.Builder(this)
+                .setTitle("Purchase Locked")
+                .setMessage("You must purchase '${storeItems.find { it.id == prerequisiteId }?.name}' before buying '${item.name}'.")
+                .setPositiveButton("OK", null)
+                .show()
+            return
+        }
+
         if (userPoints < item.price) {
             AlertDialog.Builder(this)
                 .setTitle("Insufficient Points")
@@ -183,4 +199,5 @@ class StoreActivity : AppCompatActivity() {
                 Toast.makeText(this, "Purchase failed. Please try again.", Toast.LENGTH_SHORT).show()
             }
     }
+
 }
