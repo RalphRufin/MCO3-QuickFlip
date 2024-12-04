@@ -67,11 +67,51 @@ class HomeFragment : Fragment() {
                 .addOnSuccessListener { document ->
                     val recentDeckIds = document.get("recentDecks") as? List<String> ?: emptyList()
 
-                    // Fetch deck details for each recent deck ID
-                    fetchDeckDetails(recentDeckIds)
+                    // Filter out non-existent deck IDs before fetching details
+                    val validDeckIds = mutableListOf<String>()
+
+                    // Create a chain of checks to handle async nature of Firestore
+                    val checkDeckExistence = { deckId: String, continuation: (Boolean) -> Unit ->
+                        firestore.collection("deck_items").document(deckId).get()
+                            .addOnSuccessListener { snapshot ->
+                                // Check if the document exists and is not empty
+                                continuation(snapshot.exists() && snapshot.data != null)
+                            }
+                            .addOnFailureListener {
+                                continuation(false)
+                            }
+                    }
+
+                    // Check existence of each deck ID
+                    fun checkNextDeck(index: Int) {
+                        if (index < recentDeckIds.size) {
+                            checkDeckExistence(recentDeckIds[index]) { exists ->
+                                if (exists) {
+                                    validDeckIds.add(recentDeckIds[index])
+                                }
+
+                                // Move to next deck
+                                checkNextDeck(index + 1)
+                            }
+                        } else {
+                            // All decks checked, proceed with fetching details
+                            if (validDeckIds.isNotEmpty()) {
+                                fetchDeckDetails(validDeckIds)
+                            } else {
+                                // No valid decks found
+                                recentDecks = mutableListOf()
+                                setupRecentDecksAdapter()
+                            }
+                        }
+                    }
+
+                    // Start the checking process
+                    checkNextDeck(0)
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error fetching recent decks", e)
+                    recentDecks = mutableListOf()
+                    setupRecentDecksAdapter()
                 }
         }
     }
@@ -85,21 +125,34 @@ class HomeFragment : Fragment() {
             return
         }
 
+        // Track the number of successful and failed fetches
+        var successfulFetches = 0
+        var failedFetches = 0
+
         // Fetch details for each recent deck
         recentDeckIds.forEach { deckId ->
             firestore.collection("deck_items").document(deckId).get()
                 .addOnSuccessListener { document ->
                     val deckItem = document.toObject(DeckItem::class.java)
                     deckItem?.id = document.id
-                    deckItem?.let { recentDecks.add(it) }
+                    deckItem?.let {
+                        recentDecks.add(it)
+                        successfulFetches++
+                    }
 
-                    // When all deck details are fetched, set up the adapter
-                    if (recentDecks.size == recentDeckIds.size) {
+                    // Check if all fetches are complete
+                    if (successfulFetches + failedFetches == recentDeckIds.size) {
                         setupRecentDecksAdapter()
                     }
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error fetching deck details", e)
+                    failedFetches++
+
+                    // Check if all fetches are complete
+                    if (successfulFetches + failedFetches == recentDeckIds.size) {
+                        setupRecentDecksAdapter()
+                    }
                 }
         }
     }
@@ -160,7 +213,7 @@ class HomeFragment : Fragment() {
                 val currentRecentDecks = userDocument.get("recentDecks") as? MutableList<String>
                     ?: mutableListOf()
 
-                // Remove the deck if it already exists to avoid duplicates
+                // Remove the deck if it exists
                 currentRecentDecks.remove(deckId)
 
                 // Add the new deck ID at the end
@@ -176,6 +229,8 @@ class HomeFragment : Fragment() {
             }
                 .addOnSuccessListener {
                     Log.d(TAG, "Recent decks updated successfully")
+                    // Refresh the recent decks after update
+                    fetchRecentDecks()
                 }
                 .addOnFailureListener { e ->
                     Log.e(TAG, "Error updating recent decks", e)
