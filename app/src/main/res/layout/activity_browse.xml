@@ -34,7 +34,8 @@
             android:layout_width="330dp"
             android:layout_height="50dp"
             android:layout_marginTop="88dp"
-            android:background="#EFF5F9"
+            android:elevation="8dp"
+            android:background="@drawable/search_bar_border"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="16dp"
@@ -67,16 +68,16 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/deck_recycler_view"
-            android:layout_width="321dp"
-            android:layout_height="323dp"
+            android:layout_width="327dp"
+            android:elevation="32dp"
+            android:layout_height="420dp"
             android:layout_marginTop="16dp"
-            android:background="@color/light_gray"
+            android:background="@drawable/search_bar_border"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.555"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/search_bar"
-            app:layout_constraintVertical_bias="0.067"
+            app:layout_constraintVertical_bias="0.057"
             tools:listitem="@layout/deck_item" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
