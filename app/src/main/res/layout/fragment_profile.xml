@@ -112,6 +112,24 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:backgroundTint="@color/black" />
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/deleteButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Delete Profile"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:textColor="@color/white"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="24dp"
+                app:cornerRadius="8dp"
+                app:layout_constraintWidth_percent="0.85"
+                app:layout_constraintBottom_toTopOf="@id/logoutButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:backgroundTint="#ff2c2c" />
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

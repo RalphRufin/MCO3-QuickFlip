@@ -3,11 +3,14 @@
 
     <item
         android:id="@+id/nav_settings"
-        android:title="@string/settings" />
+        android:title="@string/settings"
+        android:icon="@drawable/quickflipsettingsicon"/>
     <item
         android:id="@+id/nav_help"
-        android:title="@string/help" />
+        android:title="@string/help"
+        android:icon="@drawable/quickfliphelpicon"/>
     <item
         android:id="@+id/nav_support"
-        android:title="@string/support_quickflip" />
+        android:title="@string/support_quickflip"
+        android:icon="@drawable/star_yellow"/>
 </menu>
