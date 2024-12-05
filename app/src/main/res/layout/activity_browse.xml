@@ -6,7 +6,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/rounded_background"> <!-- Set rounded background -->
+    android:background="@drawable/rounded_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -29,65 +29,90 @@
             android:layout_height="wrap_content"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/search_bar"
-            android:layout_width="330dp"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="300dp"
             android:layout_height="50dp"
             android:layout_marginTop="88dp"
-            android:elevation="8dp"
-            android:background="@drawable/search_bar_border"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp"
-            app:layout_constraintEnd_toEndOf="@+id/deck_recycler_view"
-            app:layout_constraintStart_toStartOf="@+id/deck_recycler_view"
-            app:layout_constraintTop_toBottomOf="@id/toolbar">
-
-            <EditText
-                android:id="@+id/searchEditText"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:hint="Search"
-                android:importantForAutofill="no"
-                android:inputType="text"
-                android:textSize="16sp" />
-
-            <ImageButton
-
-                android:id="@+id/searchButton"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Search"
-                android:padding="8dp"
-                android:src="@drawable/ic_search" />
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/deck_recycler_view"
-            android:layout_width="327dp"
-            android:elevation="32dp"
-            android:layout_height="420dp"
-            android:layout_marginTop="16dp"
-            android:background="@drawable/search_bar_border"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/search_bar"
-            app:layout_constraintVertical_bias="0.057"
-            tools:listitem="@layout/deck_item" />
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <!-- Search Bar content inside CardView -->
+            <LinearLayout
+                android:id="@+id/search_bar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/quickflipsearchbarbg"
+                android:elevation="0dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"> <!-- No extra elevation needed -->
+
+                <EditText
+                    android:id="@+id/searchEditText"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@null"
+                    android:hint="Search"
+                    android:importantForAutofill="no"
+                    android:inputType="text"
+                    android:textSize="16sp" />
+
+                <ImageButton
+                    android:id="@+id/searchButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Search"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_search" />
+            </LinearLayout>
+
+        </androidx.cardview.widget.CardView>
+
+    <!-- RecyclerView inside CardView -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
+            android:layout_height="350dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.495"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardView"
+            app:layout_constraintVertical_bias="0.445"
+            tools:ignore="NotSibling">
+
+            <ImageView
+                android:id="@+id/searchBackgroundImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/quickflipceresfauna"
+                android:scaleType="centerInside" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/deck_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="95dp"
+                android:layout_margin="8dp"
+                tools:listitem="@layout/deck_item" />
+        </androidx.cardview.widget.CardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <com.google.android.material.navigation.NavigationView
-        android:id="@+id/navigation_menu"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/drawer_menu" />
+<com.google.android.material.navigation.NavigationView
+android:id="@+id/navigation_menu"
+android:layout_width="wrap_content"
+android:layout_height="match_parent"
+android:layout_gravity="start"
+app:headerLayout="@layout/nav_header"
+app:menu="@menu/drawer_menu" />
 
-</androidx.drawerlayout.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
