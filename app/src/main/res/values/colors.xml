@@ -7,5 +7,7 @@
     <color name="fig_blue">#0D99FF</color>
     <color name="mission_completed">#E8F5E9</color>
     <color name="mission_incomplete">#FFFFFF</color>
+    <color name="light_red">#FF7F7F</color>
+    <color name="rewards_claimable">#EAA221</color>
 
 </resources>

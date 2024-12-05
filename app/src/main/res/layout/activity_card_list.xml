@@ -59,7 +59,7 @@
                 android:layout_margin="16dp"
                 android:background="@null"
                 android:scaleType="centerInside"
-                android:src="@drawable/quickflipblueaddbutton"
+                android:src="@drawable/quickflipplaybutton"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +115,7 @@
             android:layout_weight="1"
             android:layout_marginHorizontal="16dp"
             android:text="Edit Deck"
-            android:backgroundTint="@color/design_default_color_primary"
+            android:backgroundTint="@color/light_red"
             android:textColor="@android:color/white" />
 
         <Button
@@ -125,8 +125,9 @@
             android:layout_weight="1"
             android:layout_marginHorizontal="16dp"
             android:text="View Cards"
-            android:backgroundTint="@color/design_default_color_primary"
+            android:backgroundTint="@color/light_red"
             android:textColor="@android:color/white" />
+
 
     </LinearLayout>
 

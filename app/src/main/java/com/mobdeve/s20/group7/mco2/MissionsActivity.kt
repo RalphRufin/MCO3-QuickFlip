@@ -30,6 +30,10 @@ class MissionsActivity : AppCompatActivity() {
     private lateinit var timerDisplay: TextView
     private var missionsCompleted = mutableMapOf<String, Boolean>()
     private var decksTestedToday: Long = 0
+    private var clickCount = 0
+    private var lastClickTime = 0L
+    private val resetClickThreshold = 3 // Number of clicks required
+    private val resetClickInterval = 1000L // Time interval in milliseconds (1 second)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +48,31 @@ class MissionsActivity : AppCompatActivity() {
         startResetTimer()
 
         scheduleMissionResetNotification()
+
+        // Add triple-click listener for testing purpose
+        setupTripleClickReset()
+    }
+
+    private fun setupTripleClickReset() {
+        timerDisplay.setOnClickListener {
+            val currentTime = System.currentTimeMillis()
+
+            if (currentTime - lastClickTime > resetClickInterval) {
+                // Reset the counter if too much time has passed between clicks
+                clickCount = 0
+            }
+
+            // Increment click count
+            clickCount++
+            lastClickTime = currentTime
+
+            if (clickCount >= resetClickThreshold) {
+                // Reset detected
+                Toast.makeText(this, "Forcing daily reset...", Toast.LENGTH_SHORT).show()
+                resetMissions()
+                clickCount = 0 // Reset the counter
+            }
+        }
     }
 
     companion object {
@@ -332,6 +361,13 @@ class MissionsActivity : AppCompatActivity() {
         // Enable the claim button if all missions are completed
         val allMissionsCompleted = missionsCompleted.values.all { it }
         claimRewardsButton.isEnabled = allMissionsCompleted
+
+        if (claimRewardsButton.isEnabled) {
+            // Button is enabled, change to your desired color
+            claimRewardsButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.rewards_claimable)
+        } else {
+            claimRewardsButton.backgroundTintList = ContextCompat.getColorStateList(this, R.color.light_gray)
+        }
     }
 
     private fun updateMissionUI(card: CardView, completed: Boolean) {
